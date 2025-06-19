@@ -1,0 +1,318 @@
+0002 H    P064                      B                                     AR390
+0003 F* A/R CHANGE AGING STATUS CODES
+0004 F* ALSO, UPDATE RECENT HI BALANCE AND DATE BY CUSTOMER
+     F*
+     F* REVISION LOG:
+JB01 F* 041305   JB01 JAN BECCARI
+JB01 F*          REVISE TO DO AGING BY INVOICE DATE INSTEAD OF DUE DATE
+JB01 F*          (FOR PNC BANK)
+JB01 F*          BUCKETS WILL CHANGED FROM:
+JB01 F*          CURRENT   1-30  31-60  61-90  OVER  90  DAYS OVERDUE
+JB01 F*          TO 0-30  31-60  61-90  91-120 OVER 120  DAYS FROM INVOICE DATE
+0007 F*
+JB01 F* 010422   MG01 MARTY GREENBERG
+JB01 F*          REVERSED TO DO AGING BY DUE DATE INSTEAD OF INVOICE DATE
+JB01 F*          (FOR ALL OPTIONS)
+JB01 F*          BUCKETS WILL CHANGED FROM:
+JB01 F*          FROM 0-30  31-60  61-90  91-120 OVER 120  DAYS FROM INVOICE DATE
+JB01 F*          CURRENT   1-30  31-60  61-90  OVER  90  DAYS OVERDUE
+0007 F*
+0008 FARDETL  UP  F 128 128 18AI     2 DISK
+0009 FARCUST  UC  F 384 384R 8AI     2 DISK
+0010 FARCONT  IC  F 256 256R 2AI     2 DISK
+0001 FGSTABL  IF  F 256 256 12AI     2 DISK
+0011 E                    AGE         5  9 2
+0013 IARDETL  NS  01   1NCD
+0014 I                                        2   90ARCOCUL1
+0015 I                                       10  12 ADINV3
+0016 I                                       10  10 ADINV1
+0017 I*
+0018 I                                        1   1 ADDEL                 D - DELETE
+0019 I                                        2   30ADCO                  COMPANY NO
+0020 I                                        4   90ADCUST                CUSTOMER NO
+0021 I                                       10  160ADINV#                INVOICE NO
+0022 I                                       17  17 ADTYPE                A/R TYPE  I/J/P
+0023 I                                       18  190ADSEQ#                A/R SEQUENCE NO
+0024 I                                       20  250ADTYMD                A/R TRX DATE YMD
+0025 I                                    P  26  302ADAMT                 A/R AMOUNT
+0026 I                                       31  310ADAGE                 AGE CODE 1 - 5
+0027 I                                    P  32  362ADPART                PART AMT REC'D
+0028 I                                    P  37  412ADPAY                 CUR MONTH PAID
+0029 I                                       42  430ADSLS                 SALESMAN NO
+0030 I                                       45  45 ADPOST                A/R POSTING CODE
+0031 I                                       46  470ADNEXT                A/R NEXT SEQ NO
+0032 I                                       48  48 ADPURG                A/R PURGE CODE
+0034 I                                       55  560ADTERM                A/R TERMS
+0035 I                                       57  620ADJRNL                JOURNAL DATE
+JB01 I                                       63  640ADTCN                 A/R TRX DATE YMD
+JB01 I                                       65  700ADTYMD                A/R TRX DATE YMD
+0036 I                                       73  780ADDUDT                A/R DUE DATE YMD
+0037 I                                       71  720DUDCN                 A/R DUE DATE YMD
+0038 I        NS  09
+0039 IARCUST  NS
+0040 I                                    P 174 1792ARTOTD                TOTAL DUE
+0041 I                                    P 180 204 AGE
+0042 I                                    P 286 2912ARHIBL                RECENT HI BAL.
+0043 I                                      292 2970ARHIDT                RECENT HI DT-YMD
+0044 I                                      319 3260ARHID8                RECENT HI DT-YMD
+0045 IARCONT  NS
+0046 I                                        1   1 ACDEL                 D - DELETE
+0047 I                                        2   30ACCO                  COMPANY #
+0048 I                                        4  33 ACNAME                COMPANY NAME
+0049 I                                      107 1080ACLMT1                1-10/1-30
+0050 I                                      109 1100ACLMT2                11-20/31-60
+0051 I                                      111 1120ACLMT3                21-30/61-90
+JB01 I                                      123 1250ACLMT4                OVER 30/90/91-120
+0002 IGSTABL  NS
+0003 I                                        1   1 TBDEL                       D - DELETE
+0004 I                                        2   7 TBTYPE                      TABLE TYPE
+0005 I                                        8  13 TBCODE                      TABLE CODE
+0006 I                                       14  43 TBDESC                      TABLE DESC
+0007 I*
+0009 I                                       14  33 TBDES1                      COMPLETE DESC
+0010 I                                       34  43 TBDES2                      ABBRV DESC
+0014 I*
+0015 I                                       44  460TBNETD                      NET DAYS
+0016 I                                       47  480TBPRXD                      PROX DAYS
+0017 I                                       49  513TBDISC                      DISCOUNT
+0018 I                                       52  574TBADON                      RACK PRCE ADD ON
+0019 I                                       58  600TBDISD                      DISCOUNT DAYS
+0020 I*
+0053 I           UDS
+0054 I                                      105 1100LDATE
+0055 I                                      109 1100LYY
+0056 I                                      111 113 KYALCO                ALL,CO
+0057 I                                      114 1150KYCO1
+0058 I                                      116 1170KYCO2
+0059 I                                      118 1190KYCO3
+0060 I                                      130 132 KYALCS                ALL,SEL
+0061 I                                      509 5100Y2KCEN                 19
+0062 I                                      511 5120Y2KCMP                 80
+0063 C*****
+0064 C     N80             EXSR ONETIM
+0066 C*
+0067 C   L1                DO
+0068 C           ARCOCU    CHAINARCUST               50
+0069 C           ADCO      CHAINARCONT               44
+0070 C                     Z-ADDACLMT1    LMT1    30
+0071 C                     Z-ADDACLMT2    LMT2    30
+0072 C                     Z-ADDACLMT3    LMT3    30
+JB01 C                     Z-ADDACLMT4    LMT4    30
+0074 C                     END
+0075 C*
+0076 C*
+0077 C* DECIDE WHETHER TO TRY TO UPDATE THE CUSTOMER'S
+0078 C* RECENT HI BALANCE AND DATE, THEN DO IT IF NECESSARY
+0079 C   L1N50   KYALCS    IFEQ 'ALL'                      B1ALL CUSTOMERS
+0080 C           KYALCO    IFEQ 'ALL'                      B2ALL COMPANIES
+0081 C           ARTOTD    IFGT ARHIBL                     B3
+0082 C                     Z-ADDARTOTD    ARHIBL
+0083 C                     Z-ADDLYMD      ARHIDT
+0084 C                     Z-ADDLYMD8     ARHID8
+0085 C                     END                             E3
+0086 C                     ELSE                            X2SEL COMPANIES
+0087 C           ADCO      IFEQ KYCO1                      B3
+0088 C           ARTOTD    IFGT ARHIBL                     B4
+0089 C                     Z-ADDARTOTD    ARHIBL
+0090 C                     Z-ADDLYMD      ARHIDT
+0091 C                     Z-ADDLYMD8     ARHID8
+0092 C                     END                             E4
+0093 C                     ELSE                            X3
+0094 C           ADCO      IFEQ KYCO2                      B4
+0095 C           ARTOTD    IFGT ARHIBL                     B5
+0096 C                     Z-ADDARTOTD    ARHIBL
+0097 C                     Z-ADDLYMD      ARHIDT
+0098 C                     Z-ADDLYMD8     ARHID8
+0099 C                     END                             E5
+0100 C                     ELSE                            X4
+0101 C           ADCO      IFEQ KYCO3                      B5
+0102 C           ARTOTD    IFGT ARHIBL                     B6
+0103 C                     Z-ADDARTOTD    ARHIBL
+0104 C                     Z-ADDLYMD      ARHIDT
+0105 C                     Z-ADDLYMD8     ARHID8
+0106 C                     END                             E6
+0107 C                     END                             E5
+0108 C                     END                             E4
+0109 C                     END                             E3
+0110 C                     END                             E2
+0111 C                     END                             E1
+0113 C*
+0114 C                     SETOF                         51
+0115 C   50                GOTO END
+0116 C*
+0117 C* PROCESS INV RECORD
+     C   01                MOVEL'ARTERM'  GSKEY  12
+     C   01                MOVE ADTERM    GSKEY
+     C   01      GSKEY     CHAINGSTABL               99
+     C   01N99             Z-ADDTBNETD    NETDAY  30
+     C   01N99             Z-ADDNETDAY    LMT1
+     C   01N99   LMT1      ADD  30        LMT2
+     C   01N99   LMT2      ADD  30        LMT3
+     C   01N99   LMT3      ADD  30        LMT4
+0116 C*
+0118 C   01      ADTYPE    IFEQ 'I'                        B1
+0119 C                     Z-ADDADINV#    SVINVX  70
+0120 C                     Z-ADDADAGE     INVAGE  10
+0121 C                     Z-ADD0         DAYS
+0122 C* DONT AGE PREPAY INVOICES
+0124 C           ADINV1    IFNE '9'                        B2
+0125 C*
+JB01 C           ADTYMD    MULT 100.0001  $MDY
+JB01 C                     Z-ADDADTCN     $CN
+0128 C                     EXSR @DTE1
+0129 C           DAYS1     SUB  G$JD      DAYS    50
+0130 C                     END                             E2
+0131 C                     EXSR UPDATE
+0132 C                     END                             E1
+0134 C*
+0135 C   01      SVINVX    COMP ADINV#                   51
+0136 C*
+0137 C           END       TAG
+0138 C*****
+0139 C******************************************
+0140 CSR         ONETIM    BEGSR                                          ONETIM
+0141 C           LDATE     MULT 10000.01  LYMD    60
+0142 C           LYY       IFGE Y2KCMP
+0143 C                     Z-ADDY2KCEN    CN      20
+0144 C                     ELSE
+0145 C           1         ADD  Y2KCEN    CN
+0146 C                     END
+0147 C                     MOVELCN        LYMD8   80
+0148 C                     MOVE LYMD      LYMD8
+0149 C                     Z-ADDLDATE     $MDY
+0150 C                     Z-ADDCN        $CN
+0151 C                     EXSR @DTE1
+0152 C                     Z-ADDG$JD      DAYS1   50
+0153 C                     SETON                         80
+0154 CSR                   ENDSR
+0155 C******************************************
+0156 CSR         @DTE1     BEGSR                                          @DTE1
+0157 C******************************************
+0158 C* CONVERT DATE FROM GREGORIAN TO JULIAN FORMAT
+0159 C*
+0160 C* IN:  $MDY
+0161 C*      $CN
+0162 C                     Z-ADD$MDY      $MDY    60
+0163 C                     Z-ADD$CN       $CN     20
+0164 C* OUT: G$JD (JULIAN DATE)
+0165 C*      G$JW (DAY OF WEEK 0=WED, 1=THUR, 6=TUES)
+0166 C*
+0167 C*
+0168 C* BREAKDOWN DATE INTO MONTH, DAY AND YEAR FIELDS
+0169 C                     Z-ADD$MDY      $YR     20
+0170 C           $MDY      MULT .0001     $MONTH  20
+0171 C           $MDY      MULT .01       $DAY    20
+0172 C*
+0173 C* IF CENTURY IS NOT PASSED, CALCULATE IT
+0174 C           $CN       IFEQ *ZERO                      B1
+0175 C           $YR       IFGE Y2KCMP                     B2
+0176 C                     Z-ADDY2KCEN    $CN
+0177 C                     ELSE                            X2
+0178 C           1         ADD  Y2KCEN    $CN
+0179 C                     END                             E2
+0180 C                     END                             E1
+0181 C*
+0182 C                     MOVEL$CN       $YEAR   40
+0183 C                     MOVE $YR       $YEAR
+0184 C*
+0185 C* CONVERT GREGORIAN TO JULIAN HERE
+0186 C*
+0187 C                     Z-ADD*ZERO     G$JD    50
+0188 C*
+0189 C*    CONVERT MONTH TO JULIAN DAYS
+0190 C           $MONTH    SUB  3         G$MWK   20
+0191 C                     Z-ADDG$MWK     GMWKSV  20
+0192 C*
+0193 C           G$MWK     IFLT *ZERO
+0194 C                     ADD  12        G$MWK
+0195 C                     END
+0196 C*
+0197 C           GMWKSV    IFNE *ZERO
+0198 C           G$MWK     MULT 30.6      G$JD      H
+0199 C                     END
+0200 C*
+0201 C*    ADD DAYS IN DATE TO JULIAN DAYS
+0202 C                     ADD  $DAY      G$JD
+0203 C*
+0204 C*    CONVERT YEAR TO JULIAN DAYS
+0205 C           $YEAR     SUB  1900      G$YYWK  30
+0206 C*
+0207 C           G$YYWK    IFNE *ZERO
+0208 C           GMWKSV    IFLT *ZERO
+0209 C                     SUB  1         G$YYWK
+0210 C                     END
+0211 C                     END
+0212 C*
+0213 C           G$YYWK    MULT 365.25    G$JYD   70
+0214 C                     ADD  G$JYD     G$JD
+0215 C*
+0216 C*
+0217 C* DETERMINE DAY OF WEEK
+0218 C           G$JD      DIV  7         G$JWK7  70
+0219 C                     MVR            G$JW    10
+0220 C*
+0221 C                     ENDSR
+0222 C******************************************
+0223 CSR         UPDATE    BEGSR
+0224 C                     Z-ADDDAYS      ARDAYS  50
+JB01 C           ARDAYS    IFGT LMT4                       B1 OVER 120
+0226 C           ADAGE     COMP 5                        79
+0227 C   79                GOTO ENDUPD
+0228 C                     Z-ADDADAGE     F       10
+0229 C                     Z-ADD5         T       10
+0230 C                     EXSR AGE
+0231 C                     GOTO ENDUPD
+0232 C                     ELSE                            X1
+JB01 C           ARDAYS    IFGT LMT3                       B2 OVER 90
+0234 C           ADAGE     COMP 4                        79
+0235 C   79                GOTO ENDUPD
+0236 C                     Z-ADDADAGE     F
+0237 C                     Z-ADD4         T
+0238 C                     EXSR AGE
+0239 C                     GOTO ENDUPD
+0240 C                     ELSE                            X2
+JB01 C           ARDAYS    IFGT LMT2                       B3 OVER 60
+0242 C           ADAGE     COMP 3                        79
+0243 C   79                GOTO ENDUPD
+0244 C                     Z-ADDADAGE     F
+0245 C                     Z-ADD3         T
+0246 C                     EXSR AGE
+0247 C                     GOTO ENDUPD
+0248 C                     ELSE                            X3
+JB01 C           ARDAYS    IFGT LMT1                       B4 OVER 30
+0250 C           ADAGE     COMP 2                        79
+0251 C   79                GOTO ENDUPD
+0252 C                     Z-ADDADAGE     F
+0253 C                     Z-ADD2         T
+0254 C                     EXSR AGE
+0255 C                     GOTO ENDUPD
+0256 C                     ELSE                            X4 0-30
+0257 C           ADAGE     COMP 1                        79
+0258 C   79                GOTO ENDUPD
+0259 C                     Z-ADDADAGE     F
+0260 C                     Z-ADD1         T
+0261 C                     EXSR AGE
+0262 C                     GOTO ENDUPD
+0263 C                     END                             E4
+0264 C                     END                             E3
+0265 C                     END                             E2
+0266 C                     END                             E1
+0267 C           ENDUPD    TAG
+0268 CSR                   ENDSR
+0269 C****************************************
+0270 CSR         AGE       BEGSR
+0271 C                     Z-ADDADAMT     ARWORK  92
+0272 C           ARWORK    SUB  ADPART    ARWORK
+0273 C           ARWORK    SUB  ADPAY     ARWORK
+0274 C           AGE,F     SUB  ARWORK    AGE,F
+0275 C           AGE,T     ADD  ARWORK    AGE,T
+0276 C                     Z-ADDT         INVAGE  10
+0277 CSR                   ENDSR
+0278 C*****************************************
+0279 OARDETL  D        01N50 51
+0280 O                         INVAGE    31
+0281 OARCUST  T        L1N50
+0282 O                         AGE      204P
+0283 O                         ARHIBL   291P
+0284 O                         ARHIDT   297
+0285 O                         ARHID8   326
