@@ -1,0 +1,46 @@
+0001 H    P016                                                            AR5004
+0002 FARCUST  IP  F 384 384  8AI     2 DISK
+0003 FARCWRK  IC  F 384 384R 8AI     2 DISK
+0004 FARC500  O   F 385 385  8AI     2 DISK
+0005 IARCUST  NS  01
+0006 I                                      303 3100ARGCC                 GROUPING COMPANY
+     I                                        2   90ARCOCU
+0007 I                                        1 256 ARDATA
+0008 I                                      257 384 ARDAT2
+0073 I                                      327 327 ARCUCL                CUSTOMER CLASS
+0009 IARCWRK  NS
+0010 I                                      271 280 ARLSTN                LAST NAME ABBR
+0011 I                                      303 3040ARGCO                 GROUPING COMPANY
+0012 I                                      305 3100ARGCUS                GROUPING CUSTOME
+0040 I           UDS
+     I                                      163 163 KYCUCL
+0013 C**
+     C*
+     C** ADD CODE TO OVERRIDE THE GROUP PROCESSING FOR CUSTOMERS
+     C** AND ONLY INCLUDE INDIVIDUAL RECORDS IF A CUSTOMER CLASS
+     C** CODE IS REQUESTED ON THE PROMPT SCREEN OF AR500P.
+     C*
+     C                     SETOF                     51
+     C   01      KYCUCL    IFEQ *BLANKS
+0014 C   01      ARGCC     CHAINARCWRK               50
+     C   01N50             EXCPT
+     C   01N50             GOTO END
+     C                     END
+     C*
+     C   01      KYCUCL    IFNE *BLANKS
+0014 C   01      ARCOCU    CHAINARCWRK               50
+     C   01N50   KYCUCL    IFEQ ARCUCL
+     C                     SETON                     51
+     C                     EXCPT
+     C                     END
+     C                     END
+     C*
+     C*
+     C           END       TAG
+     C*****************************
+0015 OARC500  E
+0016 O                         ARDATA   256
+0017 O                         ARDAT2   384
+0018 O                         ARLSTN   336
+0018 O                         ARCUCL   337
+     O                       51ARCOCU   310
