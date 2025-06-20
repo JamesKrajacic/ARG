@@ -1,0 +1,77 @@
+0001 H    P016                                                            AR5007
+0002 F* CREATE TEMP. ARDETL FILE WITH SORT FIELDS
+0003 F* (GROUP CO/CUST, SALESMAN #, ALPHA SORT)
+0004 F*
+0005 F* ALSO, PUT NOD CODE INTO CUSTOMER MASTER
+0006 F* TO ENABLE SORT TO SELECT ONLY CUSTOMERS WITH NOD'S
+0007 FARDETL  IP  F 128 128 18AI     2 DISK
+0008 FARC500  UF  F 385 385  8AI     2 DISK
+0009 FAR500X  O   F 138 138            DISK
+0010 IARDETL  NS  01
+0011 I                                        2   90COCUS L2
+0012 I                                        1 128 ADDATA
+0013 I*
+0014 I                                        1   1 ADDEL                 D - DELETE
+0015 I                                        2   30ADCO                  COMPANY NO
+0016 I                                        4   90ADCUST                CUSTOMER NO
+0017 I                                       10  160ADINV#L1              INVOICE NO
+0018 I                                       17  17 ADTYPE                A/R TYPE  I/J/P
+0019 I                                       18  190ADSEQ#                A/R SEQUENCE NO
+0020 I                                       42  430ADSLS                 SALESMAN NO
+0021 I                                      104 104 ADNOD                 NOTIF.OF DIFF-NY
+0022 IARC500  NS
+0023 I                                      303 3100GCOCUS
+0024 I*
+0025 I                                      263 2640ARSLS#                SALESMAN
+0026 I                                      271 280 ARLSTN                LAST NAME ABBR
+0027 I                                      303 3040ARGCO                 GROUPING COMPANY
+0028 I                                      305 3100ARGCUS                GROUPING CUSTOME
+0029 C*****
+0030 C   L2                DO                              B1
+0031 C                     MOVEL*BLANK    L2NOD   1
+0032 C                     MOVEL*BLANK    LSTN   10
+0033 C                     Z-ADD*ZERO     SLS#    20
+0034 C                     Z-ADD*ZERO     GRCO    20
+0035 C                     Z-ADD*ZERO     GRCUS   60
+0036 C           COCUS     CHAINARC500               50
+0037 C*
+0038 C     N50             DO                              B2
+0039 C                     MOVELARSLS#    SLS#
+0040 C                     MOVELARLSTN    LSTN
+0041 C                     Z-ADDARGCO     GRCO
+0042 C                     Z-ADDARGCUS    GRCUS
+0043 C           GCOCUS    CHAINARC500               50
+0044 C     N50             DO                              B3
+0045 C                     MOVELARLSTN    LSTN
+0046 C                     END                             E3
+0047 C                     END                             E2
+0048 C*
+0049 C                     END                             E1
+0050 C*
+0051 C* PUT NOD CODE FROM INVOICE ON ALL ACTIVITY (P,J) TOO FOR THAT INVOICE
+0052 C   L1                DO                              B1
+0053 C                     MOVELADNOD     NOD     1
+0054 C*    PUT NOD CODE INTO CUSTOMER MASTER FOR RECORD SELECTION
+0055 C           ADNOD     IFEQ 'Y'                        B2
+0056 C                     MOVELADNOD     L2NOD
+0057 C                     END                             E2
+0058 C                     END                             E1
+0059 C*
+0060 C*
+0061 C* PUT NOD CODE INTO CUSTOMER MASTER FOR RECORD SELECTION
+0062 CL2         COCUS     CHAINARC500               50
+0063 CL2N50      L2NOD     IFEQ 'Y'                        B1
+0064 CL2N50                EXCPTL2UPD
+0065 CL2N50                END                             E1
+0066 C*****
+0067 OAR500X  D        01N50
+0068 O                         ADDATA   128
+0069 O*
+0070 O                         SLS#      43
+0071 O                         NOD      104
+0072 O                         GRCO     122
+0073 O                         GRCUS    128
+0074 O                         LSTN     138
+0075 O*
+0076 OARC500  E                L2UPD
+0077 O                         L2NOD    385
