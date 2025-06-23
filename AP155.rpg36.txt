@@ -1,0 +1,543 @@
+0002 H    P016                      B                                     AP155
+0003 F*
+0006 F*
+0007 F* CASH REQUIREMENTS REPORT
+     F*
+JB01 F* JB01   062712  JAN BECCARI - FREEDOM RESOURCES - 724.693.2582
+JB01 F* ACH REVISION - PROCESS ONLY PAY BY CHECK, PAY BY ACH  OR
+JB01 F*                PAY BY WIRE TRANSFER
+JB01 F*              - ALLOW PAID CD TO BE P, A (ACH) OR W (WIRE TRANSFER)
+     F*
+0005 F*  8/06/14 MARTY GREENBERG CHANGED OUTPUT PRINTING NAMES
+     F*  FOR PAPERLESS REPORT CREATION.
+     F*  ALSO REMOVED PRINTING COPY FOR W CONSHOHOCKEN
+     F*
+JB02 F* JB02   123118  JAN BECCARI
+JB02 F*                CHG REC LENGTH OF APPAY TO MATCH APOPEN
+     F*
+JB03 F* JB03   021721  JAN BECCARI
+JB03 F*                REVISE UPDATING OF APDETINV WHEN MULTIPLE INVOICES FOR A VENDOR
+JB03 F*                HAVE THE SAME INVOICE # - COMBINE THE AMOUNTS
+0006 F*
+MG04 F* MG04   022123  MARTY GREENBERG
+MG04 F*                REVISE UPDATING OF APDETINV WHEN MULTIPLE INVOICES FOR A VENDOR
+MG04 F*                HAVE THE SAME INVOICE # - CORRECTED MANY ISSUES
+MG04 F* INCORRECT COMBINING OF UNIQUE INVOICES AND WRONG DOLLAR VALUES USED
+MG05 F* MG05   010924  MARTY GREENBERG
+MG05 F*                ADDED 'U' CODE TO HOLD FIELD FOR UTILITY AUTO-PAY
+0008*F*JB02 APPAY   UP    226 226R16II     2 DISK
+JB02 FAPPAY   UP    384 384R16II     2 DISK
+0009 FAP155S  IR      3   3  3IT      EDISK
+0010 FAPCONT  IC    256 256R 2AI     2 DISK
+0011 FAPPYTR  IC    128 128R 5AI     2 DISK
+0012 FAPVEND  IC    579 579R 7AI     2 DISK
+0013 FAPOPEN  IC    384 384R16AI     2 DISK
+0014 FAPCHKR  IC    128 128R16AI     2 DISK
+0015 FAPPYCK  UC     96  96R 9AI    81 DISK                      A
+JB02 FAPPYDS  IF    384 384 12AI     2 DISK
+0016 FAPCSHRQ O     142 142     OF     PRINTER
+0016 FAPDETINVUF    256 256 27AI  EXTK DISK                      A
+0018 E    AP155S  APPAY
+0019 E                    SEP        71  2
+0021 IAPPAY   NS  01
+0022 I                                        1   1 OPDEL                 RECORD CODE
+0023 I                                        2   30OPCONOL6              COMPANY NO.
+0024 I                                        4   80OPVENDL4              VENDOR NO.
+0025 I                                        9  130OPVONO                VOUCHER NO.
+     I                                        2  130DSKY12
+0026 I                                    P  18  232OPGRAM                GROSS AMOUNT
+0027 I                                    P  24  282OPDISC                DISCOUNT
+0028 I                                    P  29  342OPPPTD                PARTL PAID TO DATE
+0029 I                                       35  59 OPINDS                INVOICE DESCRIPTION
+0030 I**                                     69  78 OPINVN                INVOICE NO.
+0031 I                                       79  840OPINVD                INVOICE DATE
+0032 I                                       85  900OPDUED                DUE DATE
+0033 I                                       91  960OPCKNOL2              CHECK NO. FOR PREPAY
+0034 I                                       97  97 OPPAIDL3              P = PREPAY CODE
+0035 I                                      152 152 OPSNGLL1              S-SINGLE CHECK
+0036 I                                      153 1600OPBKGLL5              BANK G/L #
+0037 I                                    P 161 1662OPLPAM                THIS PAY AMT
+0038 I                                      172 1770OPCKDT                CHECK DATE - PPD
+0039 I                                      193 1970OPSEQ#
+0030 I                                      207 226 OPINVN                INVOICE NO.
+0040 IAPCONT  NS
+0041 I                                        4  33 ACNAME                COMPANY NAME
+0042 I                                       86  86 ACPRE#                Y-PRE#ERED CHEKS
+0043 IAPPYTR  NS
+0017 I                                        9  160PTBKGL                BANK G/L #
+0018 I                                       17  220PTNXCK                NEXT CHECK #
+0019 I                                       23  280PTCKDT                CHECK DATE
+0020 I                                       29  340PTDATE                DATE TO PAY BY
+0021 I                                       35  35 PTFDIS                D-FORCE DISCOUNT
+0022 I                                       36  370PTPD                  PERIOD
+0023 I                                       38  390PTPDYY                YEAR
+JB01 I                                       56  56 PTHOLD                PAY THESE-' ',A,W
+0046 IAPVEND  NS
+0047 I                                        9  38 VNNAME                VENDOR NAME
+0048 I                                      168 177 VNSORT                ALPHA SORT ABBR
+0049 IAPOPEN  NS
+0050 I                                       18  47 VNNAME                VENDOR NAME
+0051 I                                       18  27 VNSORT
+0052 IAPCHKR  NS
+0053 I                                        1   1 AMCODE                D, O, R, V
+0054 I                                       23  332AMCKAM                CHECK AMOUNT
+0055 IAPPYCK  NS
+0056 I                                        1   1 AXRECD                RECORD CD-' ',F,V,C,P
+0057 I                                       12  170AXCHEK                CHECK #
+0055 IAPDETINVNS
+0022 I                                        1   1 APDEL                 RECORD CODE
+0023 I                                        2   30APCONO                COMPANY NO.
+0024 I                                        4   80APVEND                VENDOR NO.
+0025 I                                        9  28 APINVN                INVOICE #
+MG04 I                                    P  54  592APGRAM                GROSS AMT PER VENDOR
+MG04 I                                    P  60  642APDISC                DISC AMT PER VENDOR
+0039 IAPPYDS  NS
+0043 I                                        1   1 DSDEL                 RECORD CODE
+0044 I                                        2   30DSCONO                COMPANY NO.
+0045 I                                        4   80DSVEND                VENDOR NO.
+0046 I                                        9  130DSVONO                VOUCHER NO.
+0047 I                                    P  18  232DSGRAM                GROSS AMOUNT
+0048 I                                    P  24  282DSDISC                DISCOUNT
+0049 I                                    P  29  342DSPPTD                PARTIAL PAID TO DATE
+MG18 I                                       69  740DSDSDT                DISCOUNT DUE DATE
+0050 I                                       85  900DSDUED                DUE DATE
+0051 I                                       91  960DSCKNO                CHECK NO. FOR PREPAY
+0052 I                                       97  97 DSPAID                P = PREPAY CODE
+0053 I                                      126 126 DSHALT                H = HALT CODE
+0054 I                                      127 151 DSHDES                HALT DESCRIPTION
+0055 I                                      152 152 DSSNGL                S-SINGLE CHECK
+0056 I                                      153 1600DSBKGL                BANK G/L #
+0057 I                                    P 161 1662DSLPAM                LAST PAY AMT
+0058 I                                    P 167 1712DSDSTK                DISCOUNT ALREADY TAKEN
+     I                                      172 1790DSDSD8                DISCOUNT DUE DATE
+     I                                      321 340 DSINVN
+     I                                        1 179 DSREC1
+     I                                      180 384 DSREC2
+0058 I           UDS
+0059 I                                      200 220 WIREDS                WORDS - WIRE TRANSFER
+     I                                      400 400 ACHRUN
+0060 C*****
+0061 C   L6                EXSR L6DET
+0061 C   L6                Z-ADD*ZERO     Z6      60
+0062 C*
+0063 C   L4                SETON                     14
+0064 C*
+JB01 C   L3                DO                              B
+JB01 C                     SETOF                     11
+JB01 C           OPPAID    COMP 'P'                      25PPD-CHK
+JB01 C           OPPAID    COMP 'A'                      26PPD-ACH
+JB01 C           OPPAID    COMP 'W'                      27PPD-WT
+JB01 C           OPPAID    COMP 'E'                      28PPD-EE
+MG05 C           OPPAID    COMP 'U'                      29PPD-UT
+     C      26             MOVEL'A'       ACHRUN  1
+     C     N26             MOVEL' '       ACHRUN
+JB01 C      25
+JB01 COR    26
+JB01 COR    27
+JB01 COR    28
+MG05 COR    29             SETON                     11    PREPAID
+JB01 C                     END                             E
+0066 C*
+0067 C   L1      OPSNGL    COMP 'S'                      10SINGLE CHECK
+0068 C*
+0069 C* IF STUB WAS ALREADY FILLED ...
+0070 C   12N11             EXSR CHECK
+0071 C*
+0072 C* EACH INVOICE
+     C** ADDED TO UPDATE APDETINV CORRECTLY
+     C*
+     C                     MOVELOPCONO    APKY27 27
+     C                     MOVELOPVEND    APKY25 25
+     C                     MOVE OPINVN    APKY25
+     C                     MOVE APKY25    APKY27
+     C           APKY27    CHAINAPDETINV             95
+     C*
+MG04 C  N95                ADD  OPGRAM    APGRAM
+MG04 C  N95                ADD  OPDISC    APDISC
+     C*
+0073 C                     ADD  OPGRAM    CKGRAM
+0074 C                     ADD  OPDISC    CKDISC
+0074 C                     ADD  OPDISC    CKDIS9
+0075 C                     ADD  OPLPAM    CKAMT        1919GET CHECK TOTAL
+0076 C                     ADD  1         COUNT
+0077 C   14                EXSR L4DET
+0078 C                     SETON                     80
+0079 C                     EXCPT
+0080 C                     SETOF                     80  76
+0081 C   OF                SETON                     76
+0082 C                     SETOF                     OF
+0082 C*                    SETOF                     OFOV
+0083 C*
+0084 C* CHECK FOR FULL STUB (LASER MAXIMUM IS 32 INVOICES)
+0085 C  N10      COUNT     COMP 36                   12  12
+0086 C*
+0087 C* END OF EACH SINGLE CHECK
+0088 C   10                EXSR CHECK
+0089 C*
+0090 C* END OF EACH NON-SINGLE CHECK
+0091 CL1N10                SETOF                     12
+0092 CL1N10                EXSR CHECK
+0094 C*
+0095 CL6                   SETON                     86
+0096 CL6                   EXCPT
+0097 CL6                   SETOF                     86  76
+0098 CL6                   Z-ADD0         C6CNT   50
+0099 CL6                   Z-ADD0         C6GRAM 112
+0100 CL6                   Z-ADD0         C6DISC 112
+0101 CL6                   Z-ADD0         C6LPAM 112
+0102 CL6                   Z-ADD0         P6CNT   50
+0103 CL6                   Z-ADD0         P6GRAM 112
+0104 CL6                   Z-ADD0         P6DISC 112
+0105 CL6                   Z-ADD0         P6LPAM 112
+0106 CL6                   Z-ADD0         L6CNT   50
+0107 CL6                   Z-ADD0         L6GRAM 112
+0108 CL6                   Z-ADD0         L6DISC 112
+0109 CL6                   Z-ADD0         L6LPAM 112
+0110 C******************************************
+0112 CSR         L6DET     BEGSR                                                L6DET
+0113 C*
+0114 C                     Z-ADD0         PAGE
+0115 C                     MOVE '* '      SEP
+0116 C                     TIME           TIMEX  120
+0117 C                     MOVELTIMEX     TIME    60
+0118 C                     MOVE TIMEX     DATE    60
+     C           DATE      MULT 10000.01  DATYMD  60
+     C                     MOVEL20        DATE8   80
+     C                     MOVE DATYMD    DATE8
+0119 C           OPCONO    CHAINAPCONT               96
+0120 C           ACPRE#    COMP 'Y'                      16PRE#ERED CHECKS
+0121 C           '00000'   CHAINAPPYTR               96
+0122 C                     Z-ADDPTNXCK    NXCK    60
+JB01 C*
+JB01 C           PTHOLD    IFEQ *BLANK                     B1
+JB01 C                     MOVEL'PAY BY C'PAYBY  16
+JB01 C                     MOVE 'HECK    'PAYBY
+JB01 C                     END                             E1
+JB01 C           PTHOLD    IFEQ 'A'                        B1
+JB01 C                     MOVEL'PAY BY A'PAYBY
+JB01 C                     MOVE 'CH      'PAYBY
+JB01 C                     END                             E1
+JB01 C           PTHOLD    IFEQ 'W'                        B1
+JB01 C                     MOVEL'PAY BY W'PAYBY
+JB01 C                     MOVE 'IRE TFR 'PAYBY
+JB01 C                     END                             E1
+JB01 C           PTHOLD    IFEQ 'E'                        B1
+JB01 C                     MOVEL'PAY BY P'PAYBY
+JB01 C                     MOVE 'AYROLL  'PAYBY
+JB01 C                     END                             E1
+MG05 C           PTHOLD    IFEQ 'U'                        B1
+MG05 C                     MOVEL'PAY BY U'PAYBY
+MG05 C                     MOVE 'TIL AUPY'PAYBY
+MG05 C                     END                             E1
+JB01 C*
+0123 C                     SETON                     76
+0124 C                     EXCPT
+0125 C                     SETOF                     76OF
+0125 C*                    SETOF                     76OFOV
+0126 CSR                   ENDSR
+0127 C************ * * * * * * * * * * * * * * *
+0128 CSR         L4DET     BEGSR                                                L4DET
+0129 C                     MOVELOPCONO    VNKEY   70
+0130 C                     MOVE OPVEND    VNKEY
+0131 C           VNKEY     CHAINAPVEND               94
+0132 C   94                MOVELVNKEY     OPKY12 12
+0133 C   94                MOVE OPVONO    OPKY12
+0134 C   94                MOVELOPKY12    OPKEY  16
+0135 C   94                MOVE '3001'    OPKEY
+0136 C   94      OPKEY     CHAINAPOPEN               94
+0137 C   94                MOVEL*BLANKS   VNNAME
+0138 C   94                MOVEL*BLANKS   VNSORT
+0139 C                     SETON                     74
+0140 C                     EXCPT
+0141 C                     SETOF                     741476
+0142 C   OF                SETON                     76
+0143 C                     SETOF                     OF
+0143 C*                    SETOF                     OFOV
+0144 CSR                   ENDSR
+0145 C************ * * * * * * * * * * * * * * *
+0146 CSR         CHECK     BEGSR                                                CHECK
+0147 C   12                SETOF                     19    FULL STUB CANNOT BE A CREDIT/NO PAY
+0148 C   11                SETOF                     19    PREPAID CANNOT BE A CREDIT/NO PAY
+0149 C   11                Z-ADDOPCKNO    THISCK
+0150 C   19                Z-ADD0         THISCK
+0151 C  N11N19             Z-ADDNXCK      THISCK  60
+0152 C*
+0153 C   19N12             EXSR NOPAY                      CR-NO PAY/END OF CHECK/FIX FULL STUBS
+0154 C*
+     C** ADDED TO CHECK FOR MISSED DISCOUNT AND DISPLAY MSG ON REPORT
+     C*
+     C                     SETOF                     50
+     C                     MOVEL*BLANKS   DSKEY  12
+     C                     MOVELDSKY12    DSKEY
+     C           DSKEY     CHAINAPPYDS               99
+     C  N99                SETON                     50
+     C***
+0155 C                     EXSR EDITCK
+0156 C                     SETON                     81
+0157 C                     EXCPT
+0158 C                     SETOF                     812376
+0159 C   OF                SETON                     76
+0160 C                     SETOF                     OF
+0160 C*                    SETOF                     OFOV
+0161 C*
+0162 C   11                                                PREPAID
+0163 COR 19                GOTO ENDCK#                     CREDIT/NO PAY
+0164 C   12N16             GOTO ENDCK                      FULL STUB/CONTINUE WITH SAME CHECK #
+0165 C*
+0166 C                     ADD  1         NXCK           90
+0167 C         90          Z-ADD1         NXCK
+0168 C           ENDCK#    TAG                                                  ENDCK#
+0169 C*
+0170 C  N11N19             ADD  1         C6CNT
+0171 C   11                ADD  1         P6CNT
+0172 C     N19             ADD  1         L6CNT
+0173 C*
+0174 C         12          GOTO ENDCK
+0175 C*
+0176 C  N11N19             ADD  CKGRAM    C6GRAM
+0177 C  N11N19             ADD  CKDISC    C6DISC
+0178 C  N11N19             ADD  CKAMT     C6LPAM
+0179 C   11                ADD  CKGRAM    P6GRAM
+0180 C   11                ADD  CKDISC    P6DISC
+0181 C   11                ADD  CKAMT     P6LPAM
+0182 C     N19             ADD  CKGRAM    L6GRAM
+0183 C     N19             ADD  CKDISC    L6DISC
+0184 C     N19             ADD  CKAMT     L6LPAM
+0185 C                     Z-ADD0         CKGRAM 112
+0186 C                     Z-ADD0         CKDISC 112
+0186 C                     Z-ADD0         CKDIS9  92
+0187 C                     Z-ADD0         CKAMT  112
+0188 C           ENDCK     TAG                                                  ENDCK
+0189 C*
+0190 C                     SETOF                     1219
+0191 C                     ADD  1         SEQ#    90
+0192 C                     Z-ADD0         COUNT   70
+0193 C                     SETON                     14
+0194 CSR                   ENDSR
+0195 C************ * * * * * * * * * * * * * * *
+0196 CSR         NOPAY     BEGSR                                                NOPAY
+0197 C* WHEN THE END OF A CHECK IS REACHED, AND
+0198 C* THE TOTAL IS A CREDIT, IT IS NOT POSSIBLE
+0199 C* TO WRITE A NEGATIVE CHECK. THEREFORE, ALL
+0200 C* STUBS FOR THIS CHECK MUST BE CODED AS A
+0201 C* 'CREDIT/NO PAY'.
+0202 C                     Z-ADDSEQ#      CRSEQ#  90
+0203 C           AGNNOP    TAG                                                  AGNNOP
+0204 C                     SUB  1         CRSEQ#
+0205 C           CRSEQ#    CHAINAPPYCK               30
+0206 C         30          GOTO ENDNOP
+0207 C  N16      AXRECD    COMP 'F'                      30FULL STUB/WAS CONTINUED WITH SAME CK#
+0208 C   16      AXRECD    COMP 'V'                      30FULL STUB/USED NEXT CK#
+0209 C   16    30          Z-ADDAXCHEK    NXCK
+0210 C   16    30          SUB  1         C6CNT
+0211 C   16    30          SUB  1         L6CNT
+0212 C         30          MOVEL'C'       AXRECD
+0213 C         30          Z-ADD0         AXCHEK
+0214 C         30          EXCPTNOPAYX
+0215 C         30          GOTO AGNNOP
+0216 C*
+0217 CSR         ENDNOP    ENDSR                                                ENDNOP
+0218 C************ * * * * * * * * * * * * * * *
+0219 CSR         EDITCK    BEGSR                                                EDITCK
+0220 C                     SETOF                     202122
+0221 C                     SETOF                     23
+0222 C           CKAMT     COMP 0                    202120
+0223 C*
+0224 C* GET APCHKR RECORD
+0225 C                     MOVELOPCONO    ATKY10 10
+0226 C                     MOVE OPBKGL    ATKY10
+0227 C                     MOVELATKY10    ATKEY  16
+0228 C                     MOVE THISCK    ATKEY
+0229 C           ATKEY     CHAINAPCHKR               90
+0230 C*
+0231 C* IF NOT VOID - CHECK MUST NOT EXIST
+0232 C*               CHECK MUST NOT BE OPEN IF IT DOES EXIST
+0233 C   20N90   AMCODE    COMP 'O'                  9090
+0234 C   20N90             SETON                     23    CHECK IS ALREADY OPEN
+0235 C   20                GOTO ENDECK
+0236 C*
+0237 C* IF VOID - CHECK MUST EXIST
+0238 C*           CHECK MUST BE OPEN IF IT DOES EXIST
+0239 C*           WHOLE CHECK AMOUNT MUST BE VOIDED
+0240 C   21N90   AMCODE    COMP 'O'                  9090
+0241 C   21 90N30          SETON                     23    CHECK MUST BE OPEN TO BE VOIDED
+0242 C   21 90             GOTO ENDECK
+0243 C   21                Z-SUBCKAMT     VOIDAM 112
+0244 C   21      VOIDAM    COMP AMCKAM               2222
+0245 C   21    22          SETON                     23    WHOLE CHECK MUST BE VOIDED
+0246 C   21    22          GOTO ENDECK
+0247 C*
+0248 C           ENDECK    ENDSR                                                ENDECK
+0250 C******************************************
+0251 OAPPAY   E        80
+0252 O                         SEQ#     206
+0253 O*
+0254 OAPPYCK  EADD     81
+0255 O                                    1 ' '
+0256 O                       19           1 'C'                           CREDIT/NO PAY
+0257 O                       25           1 'P'                           PREPAID-CHK
+JB01 O                       26           1 'A'                           PPD-ACH
+JB01 O                       27           1 'W'                           PPD-WT
+JB01 O                       28           1 'E'                           PPD-EE
+MG05 O                       29           1 'U'                           PPD-UTIL AUTO PAY
+0258 O                    12N16           1 'F'                           FULL STUB
+0259 O                    12 16           1 'V'                           FULL STUB/VOIDCK
+0260 O                         OPCONO     3
+0261 O                         OPBKGL    11
+0262 O                         THISCK    17
+0263 O                         OPVEND    22
+0264 O                         CKAMT     33
+0265 O                         PTCKDT    39
+0266 O                 25      OPCKDT    39
+JB01 O                 26      OPCKDT    39
+JB01 O                 27      OPCKDT    39
+JB01 O                 28      OPCKDT    39
+MG05 O                 29      OPCKDT    39
+0267 O                         Z6        45
+0268 O                         VNNAME    75
+0269 O                         SEQ#      89
+0270 O                         COUNT     96
+0271 O*
+0272 OAPPYCK  E                NOPAYX
+0273 O                         AXRECD     1
+0274 O                         AXCHEK    17
+0276 O********************************
+0377 OAPDETINVEADD     80 26 95
+     O                         OPCONO     3
+0428 O                         OPVEND     8
+0421 O                         OPINVN    28
+0422 O                         OPINDS    53
+0423 O                         OPGRAM    59P
+0424 O                         OPDISC    64P
+0425 O                         OPPPTD    70P
+0427 O                         OPDUED    76
+0429 O                         OPVONO    81
+0377 OAPDETINVE        80 26N95
+0422 O                         OPINDS    53
+MG04 O                         APGRAM    59P
+MG04 O                         APDISC    64P
+0425 O                         OPPPTD    70P
+0427 O                         OPDUED    76
+0429 O                         OPVONO    81
+0374 O********************************
+0375 O* ORIGINAL AP CASH REQUIREMENTS REPORT FOR PGH (P1)
+0376 O********************************
+0377 OAPCSHRQ E  103   76
+0378 O                         ACNAME    30
+JB01 O                         PAYBY     50
+0379 O                                  104 'PAGE'
+0380 O                         PAGE  Z  108
+0381 O                                  130 'DATE'
+0382 O                         DATE  Y  139
+0383 O        E  1     76
+     O                                    9 'BANK G/L:'
+0017 O                         PTBKGL    19 '      -  '
+0384 O                         WIREDS    47
+0385 O                                   78 'CASH REQUIREMENTS REPORT'
+     O                                   95 'NEXT CHECK #:'
+0018 O                         PTNXCKZ  103
+0386 O                                  130 'TIME'
+0387 O                         TIME     139 '  .  .  '
+0388 O        E  2     76
+0287 O                                   24 'CASH REQUIREMENTS REPORT'
+     O                         DATE8     32
+     O                         TIME      38
+0389 O                         PTCKDTY   69
+     O                                   98 'FORCE DISCOUNTS:'
+     O                         PTFDIS   101
+     O                                  123 'DATE TO PAY BY:'
+     O                         PTDATEY  132
+0390 O        E  1     76
+0391 O                         SEP      142
+0392 O        E  1     76
+0393 O                                    9 'VENDOR'
+0394 O                                   20 'INVOICE'
+0395 O                                   47 'INVOICE'
+0396 O                                   75 'GROSS'
+0397 O                                   88 'DISCOUNT'
+0398 O                                  101 'PAID'
+0399 O                                  118 'PAYMENT'
+0400 O                                  127 'DUE'
+0401 O                                  136 'VEND'
+0402 O                                  142 'VO'
+0403 O        E  1     76
+0404 O                                    8 'NAME'
+0405 O                                   19 'NUMBER'
+0406 O                                   50 'DESCRIPTION'
+0407 O                                   75 'AMOUNT'
+0408 O                                   87 'AMOUNT'
+0409 O                                  103 'TO DATE'
+0410 O                                  118 'AMOUNT'
+0411 O                                  127 'DATE'
+0412 O                                  135 'NO'
+0413 O                                  142 'NO'
+0414 O        E  2     76
+0415 O                         SEP      142
+0416 O        E 11     74
+0417 O                         VNNAME    30
+0418 O        E  1     80
+0419 O                                    5 'SEQ'
+0420 O                         OPSEQ#Z   11
+0421 O                         OPINVN    33
+0422 O                         OPINDS    60
+0423 O                         OPGRAMM   76
+0424 O                         OPDISCM   89
+0425 O                         OPPPTDM  104
+0426 O                         OPLPAMM  119
+0427 O                         OPDUEDY  129
+0428 O                         OPVENDZ  136
+0429 O                         OPVONOZ  142
+0430 O        E  2     81N12
+0431 O                                   52 '** TOTAL **'
+0432 O                         CKGRAMM   76
+0433 O                      N50CKDISCM   89
+0433 O                       50          98 'DISCOUNT NOT TAKEN'
+0434 O                         CKAMT M  119
+JB01 O                       25         126 'PPD CK'
+JB01 O                       25THISCKZ  133
+JB01 O                       25OPCKDTY  142
+JB01 O                       26         126 'PP ACH'
+JB01 O                       26THISCKZ  133
+JB01 O                       26OPCKDTY  142
+JB01 O                       27         126 'PPD WT'
+JB01 O                       27THISCKZ  133
+JB01 O                       27OPCKDTY  142
+JB01 O                       28         126 'PPD EE'
+JB01 O                       28THISCKZ  133
+JB01 O                       28OPCKDTY  142
+MG05 O                       29         126 'PPD UT'
+MG05 O                       29THISCKZ  133
+MG05 O                       29OPCKDTY  142
+0438 O                       19         142 'CREDIT / NO PAY'
+0439 O                   N11N19         142 'CHECK # XXXXXX'
+0440 O                   N11N19THISCKZ  142
+0441 O        E  2     81 12
+0442 O                      N16         142 'FULL STUB'
+0443 O                       16         135 'FULL STUB / VOID CHECK #'
+0444 O                       16THISCKZ  142
+0445 O        E  2     81 23
+0446 O                    20N90         120 'CHECK IS ALREADY OPEN'
+0447 O                    21 90         120 'CHECK MUST BE OPEN TO BE'
+0448 O                    21 90         127 ' VOIDED'
+0449 O                 22 21N90         120 'WHOLE CHECK AMOUNT MUST '
+0450 O                 22 21N90         129 'BE VOIDED'
+0451 O        E 21     86
+0452 O                                   30 '** COMPANY TOTALS **'
+0453 O        E  1     86
+0454 O                         C6CNT ZB  32
+0455 O                                   48 'COMPUTER CHECKS'
+0456 O                         C6GRAMMB  76
+0457 O                         C6DISCMB  89
+0458 O                         C6LPAMMB 119
+0459 O        E  1     86
+0460 O                         P6CNT ZB  32
+0461 O                                   48 'PREPAID PAYMNTS'
+0462 O                         P6GRAMMB  76
+0463 O                         P6DISCMB  89
+0464 O                         P6LPAMMB 119
+0465 O        E  1     86
+0466 O                         L6CNT ZB  32
+0467 O                                   48 'TOTAL CHECKS   '
+0468 O                         L6GRAMMB  76
+0469 O                         L6DISCMB  89
+0470 O                         L6LPAMMB 119
