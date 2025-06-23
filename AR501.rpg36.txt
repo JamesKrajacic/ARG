@@ -1,0 +1,836 @@
+0001 H    P064                      B                                     AR501
+0006 F*
+0007 F*  AGED TRIAL BALANCE            BY SALESMAN
+     F*
+     F* REVISION LOG:
+JB01 F* 041305   JB01 JAN BECCARI
+JB01 F*          REVISE TO DO AGING BY INVOICE DATE INSTEAD OF DUE DATE (AR390)
+JB01 F*          (FOR PNC BANK)
+JB01 F*          BUCKETS WILL CHANGED FROM:
+JB01 F*          CURRENT   1-30  31-60  61-90  OVER  90  DAYS OVERDUE
+JB01 F*          TO 0-30  31-60  61-90  91-120 OVER 120  DAYS FROM INVOICE DATE
+0009 F*
+     F* 061405   MARTY GREENBERG
+     F*          REVISED TO CORRECT ERROR WITH GROUP TOTALS NOT
+     F*          PRINTING WHEN THE LAST CUSTOMER IN THE GROUP HAS NO
+     F*          ACTIVITY. THE TOTALS WERE ACCUMULATED UNTIL THE NEXT
+     F*          GROUP TOTAL WAS READY TO PRINT.
+     F*
+MG02 F* 111918   MARTY GREENBERG
+MG02 F*          REVISED TO ALLOW FOR UNATTENDED PRINTING TO CREATE
+MG02 F*          A NEW TABLE CALLED ?9?ARATBS TO PROVIDE SALESMEN WITH
+MG02 F*          A SPREADSHEET VERSION OF PRINT OUTPUT.
+     F*
+MG02 F* 010421   MARTY GREENBERG
+MG02 F*          CHANGED OUTPUT HEADINGS TO REFLECT NEW AGING CALCULATION
+     F*
+0010 FARCUST  IPEA 3840 384            DISK
+0011 FARDETL  IS AF 138 138            DISK
+0012 FARCUSP  IF  F13441344  8AI     2 DISK
+0013 FGSTABL  IF  F 256 256 12AI     2 DISK
+0014 FARCONT  IF    256 256  2AI     2 DISK
+MG02 FSA5SHX  IF  F 640 640 15AI     2 DISK
+MG02 FSHIPTO  IF  F20482048 11AI     2 DISK
+MG02 FARATBS  O     512 512            DISK                      A
+0015 FPRINT   O     164 164     OF     PRINTER                        U8
+0016 FPRINT2  O     164 164     OA     PRINTER
+0017 FPRINT3  O     164 164     OV     PRINTER                        U7
+0018 F*-------
+0019 E                    DTA         5  9 2
+0021 IARCUST  NS  01
+0022 I                                        2   90ARCOCU
+0023 I*
+0024 I                                        1   1 ARDEL                 DELETE CODE
+0025 I                                        2   30ARCO  L4M4            COMPANY NO
+0026 I                                        4   90ARCUSTL1M1            CUSTOMER NO
+0026 I                                        4   90CUSTNO                CUSTOMER NO
+0027 I                                        4   50ARZERO
+0028 I                                       10  39 ARNAME                CUSTOMER NAME
+0029 I                                       40  69 ARADR1                ADDRESS LINE 1
+0030 I                                       70  99 ARADR2                ADDRESS LINE 2
+0031 I                                      100 129 ARADR3                ADDRESS LINE 3
+0032 I                                      130 159 ARADR4                ADDRESS LINE 4
+0033 I                                      160 1640ARZIP5                ZIP CODE
+0034 I                                      165 1680ARZIP9                ZIP + 4
+0035 I                                      169 1730ARZP14                ZIP + 4 + 5
+0036 I                                    P 174 1792ARTOTD                TOTAL DUE
+0037 I                                    P 180 1842ARCURD                CURRENT DUE
+0038 I                                    P 185 1892AR0110                01-10 DAYS OVERD
+0039 I                                    P 190 1942AR1120                11-20 DAYS OVERD
+0040 I                                    P 195 1992AR2130                60-90 DAYS DUE
+0041 I                                    P 200 2042AROV30                OVR30 DAYS OVERD
+0042 I                                    P 205 2092ARPYMT                LST CSH REC AMT
+0043 I                                      210 2150ARPDAT                LST CSH REC DATE
+0044 I                                    P 216 2202ARPREP                CASH UNAPPLIED
+0045 I                                    P 221 2252ARMTD$                SALES MTD
+0046 I                                    P 226 2302ARYTD$                SALES YTD
+0047 I                                      231 231 ARSTMT                STATEMENTS Y/N
+0048 I                                    P 232 2342ARFIN$                FINANCE CHG AMT
+0049 I                                    P 235 2402ARPBAL                PREVIOUS BALANCE
+0050 I                                      241 241 ARFINC                FINANCE CHG Y/N
+0051 I                                    P 242 2462ARM$PD                CASH REC'D MTD
+0052 I                                    P 247 2512ARY$PD                CASH REC'D YTD
+0053 I                                    P 252 2560ARCLMT                CREDIT LIMIT
+0054 I                                    P 257 2580ARAREA      77        AREA CODE
+0055 I                                    P 259 2620ARTELE      78        TELEPHONE #
+0056 I                                      263 2640ARSLS#L3M3            SALESMAN
+0057 I                                      265 2660ARTERM                TERMS CODE
+0058 I                                      303 3100GRCOCUL2M2            GROUPING COMPANY
+0058 I                                      303 3100CUSGRP                GROUPING COMPANY
+0059 I                                      311 3180ARPDA8                LST CSH REC DATE
+0060 IARDETL  NS  02
+0061 I                                       10  120ADINV3
+0062 I                                       10  100ADINV1
+0063 I*
+0064 I                                        1   1 ADDEL
+0065 I                                        2   30ARCO  L4M4
+0066 I                                        2   90ADCOCU
+0067 I                                        4   90ARCUSTL1M1
+0067 I                                        4   90DTCUST
+0068 I                                       10  160ADINV#                INVOICE NO
+0069 I                                       17  17 ADTYPE                A/R TYPE  I/J/P
+0070 I                                       18  190ADSEQ#                A/R SEQUENCE NO
+     I                                        2  160SAKEY
+0071 I                                        2  19 ADKEY
+0072 I                                       20  250ADDATE                A/R DATE
+0073 I                                    P  26  302ADAMT                 A/R AMOUNT
+0074 I                                       31  310ADAGE                 AGE CODE 1 - 5
+0075 I                                    P  32  362ADPART                PART AMT REC'D
+0076 I                                    P  37  412ADPAY                 CUR MONTH PAID
+0077 I                                       42  430ADSLS L3M3            SALESMAN NO
+0078 I                                       45  45 ADPOST                A/R POSTING CODE
+0079 I                                       46  470ADNEXT                A/R NEXT SEQ NO
+0080 I                                       48  48 ADPURG                A/R PURGE CODE
+0081 I                                       49  540ADDUDT                A/R DUE DATE
+0082 I                                       55  560ADTERM                A/R TERMS
+0083 I                                       57  620ADJRNL                JOURNAL DATE
+0039 I                                       71  780ADDUD8                      A/R DUE DATE YMD
+     I                                      104 104 ADNOD                 NOTIF.OF DIFF-NY
+     I                                      105 1110ADRFIV                REFERENCE INV #
+0084 I                                      121 1280GRCOCUL2M2            GROUPING COMPANY
+0084 I                                      121 1280DTCOCU                GROUPING COMPANY
+0085 IARCUSP  NS
+0086 I                                      192 216 CSCMT1                CREDIT COMMENT LINE 1
+0087 I                                      217 241 CSCMT2                CREDIT COMMENT LINE 2
+0088 I                                      242 266 CSCMT3                CREDIT COMMENT LINE 3
+0089 I                                      267 291 CSCNCT                CONTACT NAME
+0090 IGSTABL  NS
+0091 I                                        1   1 TBDEL                 D - DELETE
+0092 I                                        2   7 TBTYPE                TABLE TYPE
+0093 I                                        8  13 TBCODE                TABLE CODE
+0094 I                                       14  43 TBDESC                TABLE DESC
+0095 IARCONT  NS
+0096 I                                        4  33 CONAME
+0097 I                                      107 1080ACLMT1                1-10/1-30
+0098 I                                      109 1100ACLMT2                11-20/31-60
+0099 I                                      111 1120ACLMT3                21-30/61-90
+JB01 I                                      123 1250ACLMT4                OVER 30/90/91-120
+0057 ISA5SHX  NS
+0058 I                                        1   1 SHDEL                       D - DELETE
+0059 I                                        2   30SHCO                        COMPANY
+0060 I                                        4   90SHCUST                      CUSTOMER
+0061 I                                       10  160SHINV                       INVOICE
+0062 I                                       17  220SHORD                       ORDER
+0063 I                                       23  250SHSHIP                      SHIP NUMBER
+0064 I                                       26  40 SHPORD                      CUST PO NUMBER
+0065 I                                       41  460SHPODT                      CUST PO DATE MDY
+0066 I                                       47  480SHTERM                      TERMS CODE
+0067 I                                       49  68 SHSVIA                      SHIP VIA
+0068 I                                       69  98 SHSNAM                      SHIP NAME
+0026 I                                      219 2240SHIMDY                      INVOICE MDY
+0027 I                                      225 2300SHSMDY                      SHIP MDY
+0028 I                                      231 2360SHOMDY                      ORDER MDY
+0029 I                                      237 2420SHRMDY                      REQUEST MDY
+0030 I                                    P 243 2472SHITOT                      INVOICE TOTAL
+0031 I                                      248 262 SHSHPO                      SHIP TO PO#
+0032 I                                      263 282 SHVAR1                      USER INFO FLD 1
+0033 I                                      283 302 SHVAR2                      USER INFO FLD 2
+0034 I                                      303 303 SHFRCD                      FREIGHT CODE(C,P
+0035 I                                      304 328 SHRTG1                      ROUTING LINE 1
+0036 I                                      329 353 SHRTG2                      ROUTING LINE 2
+0037 I                                      354 363 SHCAR#                      RAIL CAR #
+0038 I                                      364 393 SHFRNM                      FREIGHT BILL NAM
+0039 I                                      394 394 SHFPER                FRGT PER CODE (L,C)
+0040 I                                      395 395 SHFBCL                C=FRT BILL CLOSED
+0041 I                                      396 415 SHFBIV                FRT BILL INVOICE #
+0042 I                                      416 4230SHFBDT                FRT BILL DATE
+0043 I                                      424 4322SHFBAM                FRT BILL AMT
+0044 I                                      433 434 SHCACD                      CARRIER CODE
+0045 I                                      435 4420SHPOD8                      CUST PO DATE MDY
+0046 I                                      443 4500SHIMD8                      INVOICE MDY
+0047 I                                      451 4580SHSMD8                      SHIP MDY
+0048 I                                      459 4660SHOMD8                      ORDER MDY
+0049 I                                      467 4740SHRMD8                      REQUEST MDY
+     I                                      475 4800SHDIOR                DISTRIBUTOR ORDER #
+     ISHIPTO  NS
+     I                                        1   1 CSDEL                 D - DELETE
+     I                                        2   30CSCO                  SHIP TO CO #
+     I                                        4   90CSCUST                SHIP TO CUST #
+     I                                       10  120CSSHIP                SHIP TO #
+     I                                       13  42 CSNAME                SHIP NAME
+     I                                       43  72 CSADR1                SHIP LINE 1
+     I                                       73 102 CSADR2                SHIP LINE 2
+     I                                      103 132 CSADR3                SHIP LINE 3
+     I                                      133 162 CSADR4                SHIP LINE 4
+     I                                      163 1670CSZIP5                ZIP CODE
+     I                                      168 1710CSZIP9                ZIP + 4
+     I                                    P 172 1740CSMILS                MILES-FREIGHT
+     I                                      175 176 CSSTAT                STATE
+     I                                     12901319 CSCTST                CITY
+0101 I           UDS
+0102 I                                      105 1100LDATE
+0103 I                                      151 151 KYOUTS                O OUTSTANDING IV
+0104 I                                      153 153 KYCLYN
+     I                                      161 161 KYNOD                 JB120601:ADD
+     I                                      163 163 KYCUCL
+0105 C**---
+0106 C         69          SETON                     61
+0107 C         69          SETOF                     69
+0108 C*
+0109 C*
+0110 C** COMPANY RECORD
+0111 C   L4      KYCLYN    COMP 'Y'                      72
+     C   L4      KYNOD     COMP 'Y'                      73NOD'S ONLY
+0112 C   L4      ARCO      CHAINARCONT               99
+0113 C   L4N99             Z-ADDACLMT1    LMT1    20
+0114 C   L4N99             Z-ADDACLMT2    LMT2    20
+0115 C   L4N99             Z-ADDACLMT3    LMT3    20
+JB01 C   L4N99             Z-ADDACLMT4    LMT4    30
+0117 C   L4N99   ACLMT1    ADD  1         LMT11   20
+0118 C   L4N99   ACLMT2    ADD  1         LMT21   20
+JB01 C   L4N99   ACLMT3    ADD  1         LMT31   20
+0119 C   L4 99             MOVEL*BLANK    CONAME
+0120 C   L4                TIME           TIMEOF  60
+0121 C   L4                Z-ADD*ZEROS    PAGE1
+0122 C   L4                Z-ADD*ZEROS    PAGE2
+0123 C   L4      KYOUTS    COMP 'O'                      50
+0124 C   L4N50             SETON                     6061
+0125 C*
+0126 C   L4                Z-ADD*ZEROS    L4TOT  112
+0127 C   L4                Z-ADD*ZEROS    L4CUR  102
+0128 C   L4                Z-ADD*ZEROS    L40110 102
+0129 C   L4                Z-ADD*ZEROS    L41120 102
+0130 C   L4                Z-ADD*ZEROS    L42130 102
+0131 C   L4                Z-ADD*ZEROS    L4OV30 102
+0132 C   L4                Z-ADD*ZERO     L4CDUE 102
+0133 C   L4                Z-ADD*ZERO     L4CPRE 102
+0134 C   L4                Z-ADD*ZEROS    L4OUTB  30
+     C*
+     C   L4      KYCUCL    IFNE *BLANKS
+0179 C   L4                MOVE *BLANK    CUKEY
+0180 C   L4                MOVEL'ARCUCL'  CUKEY  12
+0181 C   L4                MOVE KYCUCL    CUKEY
+0182 C   L4      CUKEY     CHAINGSTABL               65
+     C   L4    65          MOVE *BLANK    CUDESC
+     C   L4   N65          MOVE TBDESC    CUDESC 20
+     C   L4   N65          SETON                     66
+     C                     END
+     C**
+0135 C**---
+0136 C   L3                MOVE *BLANK    TBKEY
+0137 C   L3                MOVEL'SLSMAN'  TBKEY  12
+0138 C   L3                MOVE ARSLS#    TBKEY
+0139 C   L3      TBKEY     CHAINGSTABL               98
+0140 C   L3N98             MOVELTBDESC    SLNAME 30
+0141 C   L3 98             MOVEL*BLANK    SLNAME
+0142 C   L3                Z-ADD*ZEROS    L3TOT  112
+0143 C   L3                Z-ADD*ZEROS    L3CUR  102
+0144 C   L3                Z-ADD*ZEROS    L30110 102
+0145 C   L3                Z-ADD*ZEROS    L31120 102
+0146 C   L3                Z-ADD*ZEROS    L32130 102
+0147 C   L3                Z-ADD*ZEROS    L3OV30 102
+0148 C   L3                Z-ADD*ZEROS    OUTBAL  30
+     C**--
+0160 C   L1                SETOF                     71
+0161 C   L1                SETOF                     62
+0162 C   L1      ARCOCU    CHAINARCUSP               97
+0163 C   L1N97   CSCMT1    COMP *BLANK               7171
+0164 C   L1N97N71CSCMT2    COMP *BLANK               7171
+0165 C   L1N97N71CSCMT3    COMP *BLANK               7171
+0166 C**
+0167 C** GET A/R TERM DESCRIPTION
+0168 C   L1                MOVE *BLANK    TBKEY
+0169 C   L1                MOVEL'ARTERM'  TBKEY  12
+0170 C   L1                MOVE ARTERM    TBKEY
+0171 C   L1      TBKEY     CHAINGSTABL               96
+0172 C   L1 96             MOVE *BLANK    TMNAME 20
+0173 C   L1N96             MOVELTBDESC    TMNAME 20
+0174 C**
+0175 C** GET CREDIT LIMIT FROM GROUP CUSTOMER
+0176 C   L1      ARCOCU    IFEQ GRCOCU                     B
+0177 C                     Z-ADDARCLMT    CLMT    90
+0178 C                     END                             E
+0179 C**
+0180 C* NEW CUSTOMER
+0181 C   L1                SETOF                     315152
+0182 C   L1                SETOF                     53
+0183 C   L1                Z-ADD*ZEROS    DTA
+0184 C   L1      ARPDAT    COMP 000000               4242
+0185 C  NMR                SETON                     31
+0186 C   01 50   ARTOTD    COMP 0                    6161
+0187 C   01 61             SETON                     62
+0187 C   01 61             SETON                     63
+0187 C   01 61             MOVELCUSGRP    SAVGRP  80
+0188 C   01                GOTO END
+0189 C**---
+0190 C* 02  PROCESS DETAIL  (NO MATCH)
+0191 C     NMR             SETON                         26
+0192 C      26             EXCPT
+0193 C     NMR             SETOF                         26
+0194 C     NMR             GOTO END
+0195 C**---
+0196 C* 02 PROCESS DETAIL RECORD ( MATCH)
+0197 C*--
+     C                     MOVEL*BLANK    INVPMO  1
+     C                     MOVEL*BLANK    INVNOD  3
+0198 C* TEST AGING PERIOD
+0199 C           ADDATE    MULT 100.0001  ADMDY   60
+0200 C                     SETOF                     101112
+0201 C                     SETOF                     131415
+0202 C           ADAGE     COMP 2                    101112
+0203 C   10      ADAGE     COMP 4                    151314
+0204 C   11                Z-ADD1         ADAGE
+0205 C   15                Z-ADD5         ADAGE
+0206 C                     Z-ADDADAGE     I       10
+0207 C*--
+0208 C* DETERMINE ARDETL TYPE  -  ADD INTO TOTALS
+0209 C                     SETOF                     212223
+0210 C                     SETOF                         24
+0211 C*--
+0212 C* INVOICE ?
+MG02 C*
+ |   C*********************
+ |   C* GET CUSTOMER PO FROM SA5SHP TABLE
+ |   C           SAKEY     CHAINSA5SHX               99
+ |   C  N99                MOVELSHPORD    PONUM  15
+ |   C*
+ |   C                     MOVELSHCO      CSKEY  110
+ |   C                     MOVELSHCUST    CSK9    90
+ |   C                     MOVE SHSHIP    CSK9
+ |   C                     MOVE CSK9      CSKEY
+ |   C  N99      CSKEY     CHAINSHIPTO               99
+MG02 C*********************
+0213 C           ADTYPE    COMP 'I'                      21
+     C** TEST INVOICE HAD ACTIVITY AGAINST IT IN PREVIOUS MONTH
+     C           ADPART    IFNE *ZERO                      B1
+     C                     MOVEL'*'       INVPMO
+     C                     END                             E1
+     C** NOD (NOTIF. OF DIFFERENCE)
+     C           ADNOD     IFEQ 'Y'                        B1
+     C                     MOVEL'NOD'     INVNOD
+     C                     END                             E1
+0214 C** TEST OUTSTANDING ONLY
+0215 C   21 50             SETOF                     60
+0216 C   21 50   ADPAY     ADD  ADPART    ADPAID  92
+0217 C   21 50   ADAMT     SUB  ADPAID    ADBAL   92 6060
+0218 C   21 50 60
+0219 CAN      N61          SETON                     6962
+0220 C  N60                GOTO END
+0222 C*
+0223 C   21      ADINV1    IFEQ 9                          B1 PPD CASH
+0224 C                     ADD  ADAMT     L4CPRE
+0225 C                     SUB  ADPAID    L4CPRE
+0226 C                     END                             E1
+0227 C   21      ADAMT     SUB  ADPART    ADAMT
+0228 C   21      DTA,I     ADD  ADAMT     DTA,I
+0229 C   21                GOTO END
+0230 C*--
+0231 C* CREDIT INVOICE ?
+0232 C           ADTYPE    COMP 'C'                      22
+0233 C   22      ADAMT     SUB  ADPART    ADAMT
+0234 C   22      DTA,I     ADD  ADAMT     DTA,I
+0235 C   22                GOTO END
+0236 C*--
+0237 C* ADJUSTMENT ?
+0238 C           ADTYPE    COMP 'J'                      23
+0239 C   23      DTA,I     ADD  ADAMT     DTA,I
+0240 C   23                GOTO END
+0241 C*--
+0242 C* PAYMENT ?
+0243 C           ADTYPE    COMP 'P'                      24
+0244 C   24      DTA,I     SUB  ADAMT     DTA,I
+0245 C   24                Z-SUBADAMT     ADAMT
+0246 C   24                GOTO END
+0247 C*--
+0248 C* INVALID TYPE - ERROR MSG
+0249 C                     SETON                         25
+0250 C   25                EXCPT
+0251 C   25                SETOF                         25
+0252 C           END       TAG
+0253 C**---
+     C* IF NOD'S ONLY, DON'T TEST FOR OUT OF BALANCE *******
+     CL1 73                DO                              B1
+     CL1                   Z-ADDDTA,1     ARCURD
+     CL1                   Z-ADDDTA,2     AR0110
+     CL1                   Z-ADDDTA,3     AR1120
+     CL1                   Z-ADDDTA,4     AR2130
+     CL1                   Z-ADDDTA,5     AROV30
+     CL1                   XFOOTDTA       ARTOTD
+     CL1                   END                             E1
+0254 C* COMPARE DETAIL WITH ARCUST   MASTER ****************
+0255 CL1         DTA,1     COMP ARCURD               5151
+0256 CL1N51      DTA,2     COMP AR0110               5151
+0257 CL1N51      DTA,3     COMP AR1120               5151
+0258 CL1N51      DTA,4     COMP AR2130               5151
+0259 CL1N51      DTA,5     COMP AROV30               5151
+0260 CL1 51N31   OUTBAL    ADD  1         OUTBAL
+0261 CL1 51N31             ADD  1         L4OUTB
+0262 CL1 51N31   OUTBAL    COMP 0                    4141
+0263 C* CROSSFOOT ARCUST   AGE PERIODS *********************
+0264 CL1                   Z-ADD*ZEROS    TOT
+0265 CL1                   ADD  ARCURD    TOT    112
+0266 CL1                   ADD  AR0110    TOT
+0267 CL1                   ADD  AR1120    TOT
+0268 CL1                   ADD  AR2130    TOT
+0269 CL1                   ADD  AROV30    TOT        5353
+0270 CL1         TOT       COMP ARTOTD               5252
+0271 CL1 52 31             ADD  1         OUTBAL
+0272 CL1 52 31             ADD  1         L4OUTB
+0273 CL1 52 31   OUTBAL    COMP 0                    4141
+0274 CL1 53 31             ADD  1         OUTBAL
+0275 CL1 53 31             ADD  1         L4OUTB
+0276 CL1 53 31   OUTBAL    COMP 0                    4141
+0277 C**---
+0278 C* SALESMAN TOTALS
+0279 CL1 MR                ADD  ARTOTD    L3TOT  112
+0280 CL1 MR                ADD  ARCURD    L3CUR  102
+0281 CL1 MR                ADD  AR0110    L30110 102
+0282 CL1 MR                ADD  AR1120    L31120 102
+0283 CL1 MR                ADD  AR2130    L32130 102
+0284 CL1 MR                ADD  AROV30    L3OV30 102
+0285 C**---
+0286 C* GROUP TOTALS
+0287 CL1 MR                ADD  ARTOTD    L2TOT  112
+0288 CL1 MR                ADD  ARCURD    L2CUR  102
+0289 CL1 MR                ADD  AR0110    L20110 102
+0290 CL1 MR                ADD  AR1120    L21120 102
+0291 CL1 MR                ADD  AR2130    L22130 102
+0292 CL1 MR                ADD  AROV30    L2OV30 102
+0294 C**---
+0295 C* COMPANY TOTALS
+0296 CL1 MR                ADD  ARTOTD    L4TOT  112
+0297 CL1 MR                ADD  ARCURD    L4CUR  102
+0298 CL1 MR                ADD  AR0110    L40110 102
+0299 CL1 MR                ADD  AR1120    L41120 102
+0300 CL1 MR                ADD  AR2130    L42130 102
+0301 CL1 MR                ADD  AROV30    L4OV30 102
+     CL2 63      SAVGRP    IFNE CUSGRP
+     CL2 63      L2TOT     IFNE *ZEROS
+     CL2 63                EXCPTTOTALS
+     CL2 63                SETOF                     63
+     CL2 63                END
+     CL2 63                END
+0109 C*
+0302 C**---
+0303 CL4         L4OUTB    COMP 0                    4343
+0304 CL4         L4CUR     SUB  L4CPRE    L4CDUE
+0305 C**---
+MG02 OARATBS  D        02 60
+ |   O                         ARCO       2
+ |   O                         ARCUST     8
+ |   O                         ARSLS#    10
+ |   O                         PONUM  B  25
+ |   O                       21          35 'INVOICE   '
+ |   O                       22          35 'CREDIT    '
+ |   O                       23          35 'ADJUSTMENT'
+ |   O                       24          35 'PAYMENT   '
+ |   O                         ADINV#    42
+ |   O                         SHIMD8    50
+ |   O                       21ADTERM    52
+ |   O                         ADAMT     57P
+ |   O                         ADRFIV    64
+ |   O                         ADDUD8    72
+ |   O                         ARNAME   102
+ |   O                         SHSHIP   105
+ |   O                         CSNAME   135
+ |   O                         CSADR1   165
+ |   O                         CSADR2   195
+ |   O                         CSADR3   225
+ |   O                         CSADR4   255
+ |   O                         CSCTST   285
+MG02 O                         CSSTAT   287
+0306 OPRINT   H  103   L3
+0307 O       OR        OFNL3
+0308 O                         CONAME    30
+0309 O                                  120 'DATE'
+0310 O                         UDATE Y  129
+0311 O                                  104 'PAGE'
+0312 O                         PAGE1 Z  108
+0313 O        H  1     L3
+0314 O       OR        OFNL3
+0315 O                       50          24 'OUTSTANDING INVOICES ONL'
+0316 O                       50          25 'Y'
+0317 O                      N73          67 '** AGED TRIAL BALANCE BY'
+0318 O                      N73          86 ' SALESMAN NUMBER **'
+     O                       73          67 '**     NOD AGING BY SALE'
+     O                       73          86 'SMAN NUMBER      **'
+0319 O                                  120 'TIME'
+0320 O                         TIMEOF   129 '  .  .  '
+0321 O        H  1     L3
+0322 O       OR        OFNL3
+0379 O                       66          15 'FOR CLASS CODE:'
+0379 O                       66KYCUCL    18
+0379 O                       66CUDESC    40
+0323 O                         SLNAME    30
+0324 O                                   64 'AS OF '
+0325 O                         LDATE Y   72
+0326 O        H 1      L3
+0327 O       OR        OFNL3
+0328 O                                   24 '* * * * * * * * * * * * '
+0329 O                                   48 '* * * * * * * * * * * * '
+0330 O                                   72 '* * * * * * * * * * * * '
+0331 O                                   96 '* * * * * * * * * * * * '
+0332 O                                  120 '* * * * * * * * * * * * '
+0333 O                                  132 '* * * * * * '
+     O                                  141 '* * * * *'
+0397 O        H 1      L3
+0398 O       OR        OFNL3
+0399 O                                    9 'CUSTOMER'
+0400 O                                   80 '- - - - - - -   DAYS OVE'
+0401 O                                   99 'RDUE  - - - - - - -'
+0402 O                                  109 'LAST'
+0403 O                                  119 'LAST'
+0404 O        H 1      L3
+0405 O       OR        OFNL3
+0406 O                                   12 'NUMBER/NAME'
+0407 O                                   20 'SLSMAN'
+0408 O                                   34 'TOTAL DUE'
+0409 O                                   47 'CURRENT'
+0410 O                                   60 '1-  '
+0411 O                         LMT1      60
+0412 O                         LMT11     70
+0413 O                                   73 '-  '
+0414 O                         LMT2      73
+0415 O                         LMT21     83
+0416 O                                   86 '-  '
+0417 O                         LMT3      86
+0418 O                                   99 'OVER 90'
+0420 O                                  111 'PAYMENT'
+0421 O                                  121 'PAY DATE'
+0422 O                                  131 'FIN CHG'
+     O                                  141 'REF INV#'
+0334 O**      H 1      L3
+0335 O**     OR        OFNL3
+0336 O**                                  9 'CUSTOMER'
+JB01 O**                                 56 '- - - - - - - - '
+JB01 O**                                 80 '- - - -    DAYS FROM INV'
+JB01 O**                                 99 'OICE DATE   - - - -'
+0339 O**                                109 'LAST'
+0340 O**                                119 'LAST'
+0341 O**      H 1      L3
+0342 O**     OR        OFNL3
+0343 O**                                 12 'NUMBER/NAME'
+0344 O**                                 20 'SLSMAN'
+0345 O**                                 34 'TOTAL DUE'
+JB01 O**                                 47 '0-  '
+JB01 O**                       LMT1      47
+JB01 O**                       LMT11     57
+JB01 O**                                 60 '-  '
+JB01 O**                       LMT2      60
+JB01 O**                       LMT21     70
+JB01 O**                                 73 '-  '
+JB01 O**                       LMT3      73
+JB01 O**                       LMT31     83
+JB01 O**                                 87 '-   '
+JB01 O**                       LMT4      87
+JB01 O**                                 99 'OVER    '
+JB01 O**                       LMT4      99
+0357 O**                                111 'PAYMENT'
+0358 O**                                121 'PAY DATE'
+0359 O**                                131 'FIN CHG'
+     O**                                141 'REF INV#'
+0360 O        H 11     L3
+0361 O       OR        OFNL3
+0362 O                                   24 '* * * * * * * * * * * * '
+0363 O                                   48 '* * * * * * * * * * * * '
+0364 O                                   72 '* * * * * * * * * * * * '
+0365 O                                   96 '* * * * * * * * * * * * '
+0366 O                                  120 '* * * * * * * * * * * * '
+0367 O                                  132 '* * * * * * '
+     O                                  141 '* * * * *'
+0368 O        D 10     01 MR 61
+0369 O       OR        02 MR 60
+0370 O       AND         N61 69
+0371 O                         ARCO       3
+0372 O                         ARCUSTZ   10
+0373 O                         ARSLS#    18
+0374 O                         ARPYMTKB 112
+0375 O                         ARPDAT   121 '  /  / 0'
+0376 O        D 1      01 MR 61
+0377 O       OR        02 MR 60
+0378 O       AND         N61 69
+0379 O                         ARNAME    30
+0380 O        D 10     02 MR 60
+     O                         INVNOD     5
+0381 O                       21          15 'INVOICE'
+0382 O                       22          15 'CREDIT'
+0383 O                       23          15 'ADJUSTMENT'
+0384 O                       24          15 'PAYMENT'
+0385 O                         ADINV#Z   23
+0386 O                         ADMDY Y   32
+0387 O                       21ADTERM    35
+0388 O                       11ADAMT J   48
+0389 O                       12ADAMT J   61
+0390 O                       13ADAMT J   74
+0391 O                       14ADAMT J   87
+0392 O                       15ADAMT J  100
+     O                         ADRFIVZ  141
+0393 O        TF30     L2 MR 62
+0394 O                                   19 'TOTALS'
+0395 O                         L2TOT JB  35
+0396 O                         L20110JB  61
+0397 O                         L22130JB  87
+0399 O        TF11     L2 MR 62
+0400 O                         L2CUR JB  48
+0401 O                         L21120JB  74
+0402 O                         L2OV30JB 100
+0404 O                         ARFIN$J  132
+0405 O        TF 1     L2 MR 62
+0406 O                 72                20 'C/L'
+0407 O                 72      CLMT  J   32
+0408 O                         TMNAME    53
+0409 O                         CSCNCT    79
+0410 O                 77                81 '('
+0411 O                 77      ARAREA    84
+0412 O                 77                85 ')'
+0413 O                 78      ARTELE    94 '   -    '
+0414 O        TF 1     L2 MR 62
+0415 O       AND          71
+0416 O                         CSCMT1    43
+0417 O                         CSCMT2    69
+0418 O                         CSCMT3    95
+0393 O        E 30             TOTALS
+0394 O                                   19 'TOTALS'
+0395 O                         L2TOT JB  35
+0396 O                         L20110JB  61
+0397 O                         L22130JB  87
+0399 O        E 11             TOTALS
+0400 O                         L2CUR JB  48
+0401 O                         L21120JB  74
+0402 O                         L2OV30JB 100
+0404 O                         ARFIN$J  132
+0405 O        E  1             TOTALS
+0406 O                 72                20 'C/L'
+0407 O                 72      CLMT  J   32
+0408 O                         TMNAME    53
+0409 O                         CSCNCT    79
+0410 O                 77                81 '('
+0411 O                 77      ARAREA    84
+0412 O                 77                85 ')'
+0413 O                 78      ARTELE    94 '   -    '
+0414 O        E  1             TOTALS
+0415 O       AND          71
+0416 O                         CSCMT1    43
+0417 O                         CSCMT2    69
+0418 O                         CSCMT3    95
+0419 O        TF 1     L1    62
+0420 O       AND          51N31
+0421 O                                    4 '****'
+0422 O                                   29 'ARDETL   OUT OF BALANCE'
+0423 O                         DTA,1 J   48
+0424 O                         DTA,2 J   61
+0425 O                         DTA,3 J   74
+0426 O                         DTA,4 J   87
+0427 O                         DTA,5 J  100
+0428 O        TF 1     L1    62
+0429 O       AND          52N31
+0430 O                                    4 '****'
+0431 O                                   29 'ARCUST   MASTER OUT OF '
+0432 O                                   36 'BALANCE'
+0433 O        TF11     L2    62
+0434 O       AND            N31
+0435 O                                   24 '* * * * * * * * * * * * '
+0436 O                                   48 '* * * * * * * * * * * * '
+0437 O                                   72 '* * * * * * * * * * * * '
+0438 O                                   96 '* * * * * * * * * * * * '
+0439 O                                  120 '* * * * * * * * * * * * '
+0440 O                                  132 '* * * * * * '
+     O                                  147 '* * * * * * * *'
+0441 O        TF30     L3
+0442 O                                   19 'SALESMAN TOTALS'
+0443 O                         L3TOT J   35
+0444 O                         L30110J   61
+0445 O                         L32130J   87
+0446 O        TF11     L3
+0447 O                         L3CUR J   48
+0448 O                         L31120J   74
+0449 O                         L3OV30J  100
+0450 O        TF22     L3 41
+0451 O                                   10 '**********'
+0452 O                                   40 'ACCOUNTS OUT OF BALANCE'
+0453 O                         OUTBAL    45
+0454 O        TF30     L4
+0455 O                                   19 'COMPANY TOTALS'
+0456 O                         L4TOT J   35
+0457 O                         L40110J   61
+0458 O                         L42130J   87
+0459 O        TF11     L4
+0460 O                         L4CDUEJ   48
+0461 O                         L41120J   74
+0462 O                         L4OV30J  100
+0463 O        TF11     L4
+0464 O                                   33 'PREPAY'
+0465 O                         L4CPREJ   48
+0466 O        TF22     L4 43
+0467 O                                   10 '**********'
+0468 O                                   40 'ACCOUNTS OUT OF BALANCE'
+0469 O                         L4OUTB    45
+0470 O        E 11     25
+0471 O                                    4 '****'
+0472 O                                   30 'INVALID ARDETL   TYPE - '
+0473 O                         ADTYPE    32
+0474 O                         ADINV#    41
+0479 OPRINT2  T 2      L1 51N31
+0480 O                                    4 '****'
+0481 O                                   29 'ARDETL   OUT OF BALANCE'
+0482 O                                   57 'CUSTOMER NUMBER - '
+0483 O                         ARCUSTZ   64
+0484 O        T 20     L1 52N31
+0485 O                                    4 '****'
+0486 O                                   29 'ARCUST   MASTER OUT OF '
+0487 O                                   36 'BALANCE'
+0488 O                                   57 'CUSTOMER NUMBER - '
+0489 O                         ARCUSTZ   64
+0490 O        T 20     L1 53 31
+0491 O                                    4 '****'
+0492 O                                   29 'ARCUST   HAS TOTALS - N'
+0493 O                                   37 'O DETAIL'
+0494 O                                   57 'CUSTOMER NUMBER - '
+0495 O                         ARCUSTZ   64
+0496 OPRINT3  H  103   L3
+0497 O       OR        OVNL3
+0498 O                         CONAME    30
+0499 O                                  120 'DATE'
+0500 O                         UDATE Y  129
+0501 O                                  104 'PAGE'
+0502 O                         PAGE2 Z  108
+0503 O        H  1     L3
+0504 O       OR        OVNL3
+0505 O                                   67 '** AGED TRIAL BALANCE BY'
+0506 O                                   86 ' SALESMAN NUMBER **'
+0507 O                                  120 'TIME'
+0508 O                         TIMEOF   129 '  .  .  '
+0509 O        H  1     L3
+0510 O       OR        OVNL3
+0511 O                         SLNAME    30
+0512 O                                   64 'AS OF '
+0513 O                         LDATE Y   72
+0514 O        H 1      L3
+0515 O       OR        OVNL3
+0516 O                                   24 '* * * * * * * * * * * * '
+0517 O                                   48 '* * * * * * * * * * * * '
+0518 O                                   72 '* * * * * * * * * * * * '
+0519 O                                   96 '* * * * * * * * * * * * '
+0520 O                                  120 '* * * * * * * * * * * * '
+0521 O                                  132 '* * * * * * '
+0594 O                                  148 '* * '
+0595 O        H 1      L3
+0596 O       OR        OVNL3
+0597 O                                    9 'CUSTOMER'
+0598 O                                   90 '- - - - - - -   DAYS OVE'
+0599 O                                  109 'RDUE  - - - - - - -'
+0600 O                                  120 'LAST'
+0601 O                                  130 'LAST'
+0602 O                                  148 'CREDIT'
+0603 O        H 1      L3
+0604 O       OR        OVNL3
+0605 O                                   12 'NUMBER/NAME'
+0606 O                                   44 'TOTAL DUE'
+0607 O                                   57 'CURRENT'
+0608 O                                   70 '1-  '
+0609 O                         LMT1      70
+0610 O                         LMT11     80
+0611 O                                   83 '-  '
+0612 O                         LMT2      83
+0613 O                         LMT21     93
+0614 O                                   96 '-  '
+0615 O                         LMT3      96
+0616 O                                  109 'OVER   '
+0617 O                         LMT4     109
+0618 O                                  122 'PAYMENT'
+0619 O                                  132 'PAY DATE'
+0620 O                                  148 'LIMIT'
+0522 O**      H 1      L3
+0523 O**     OR        OVNL3
+0524 O**                                  9 'CUSTOMER'
+JB01 O**                                 66 '- - - - - - - - '
+JB01 O**                                 90 '- - - -    DAYS FROM INV'
+JB01 O**                                109 'OICE DATE   - - - -'
+0527 O**                                120 'LAST'
+0528 O**                                130 'LAST'
+0529 O**      H 1      L3
+0530 O**     OR        OVNL3
+0531 O**                                 12 'NUMBER/NAME'
+0532 O**                                 44 'TOTAL DUE'
+JB01 O**                                 57 '0-  '
+JB01 O**                       LMT1      57
+JB01 O**                       LMT11     67
+JB01 O**                                 70 '-  '
+JB01 O**                       LMT2      70
+JB01 O**                       LMT21     80
+JB01 O**                                 83 '-  '
+JB01 O**                       LMT3      83
+JB01 O**                       LMT31     93
+JB01 O**                                 97 '-   '
+JB01 O**                       LMT4      97
+JB01 O**                                109 'OVER    '
+JB01 O**                       LMT4     109
+0544 O**                                122 'PAYMENT'
+0545 O**                                132 'PAY DATE'
+0546 O        H 12     L3
+0547 O       OR        OVNL3
+0548 O                                   24 '* * * * * * * * * * * * '
+0549 O                                   48 '* * * * * * * * * * * * '
+0550 O                                   72 '* * * * * * * * * * * * '
+0551 O                                   96 '* * * * * * * * * * * * '
+0552 O                                  120 '* * * * * * * * * * * * '
+0553 O                                  132 '* * * * * * '
+0554 O        D  2     01 MR 61
+0555 O                         ARCUSTZ    6
+0556 O                         ARNAME    37
+0557 O                         ARTOTDJ   45
+0558 O                         ARCURDJ   58
+0559 O                         AR0110J   71
+0560 O                         AR1120J   84
+0561 O                         AR2130J   97
+0562 O                         AROV30J  110
+0563 O                         ARPYMTK  123
+0564 O                    42   ARPDATY  132
+0565 O        T 10     L1 52N31
+0566 O                                    4 '****'
+0567 O                                   29 'ARCUST   MASTER OUT OF '
+0568 O                                   36 'BALANCE'
+0569 O        T 30     L3
+0570 O                                   19 'SALESMAN TOTALS'
+0571 O                         L3TOT J   45
+0572 O                         L30110J   71
+0573 O                         L32130J   97
+0574 O        T 11     L3
+0575 O                         L3CUR J   58
+0576 O                         L31120J   84
+0577 O                         L3OV30J  110
+0578 O        T 30     L4
+0579 O                                   19 'COMPANY TOTALS'
+0580 O                         L4TOT J   45
+0581 O                         L40110J   71
+0582 O                         L42130J   97
+0583 O        T 11     L4
+0584 O                         L4CDUEJ   58
+0585 O                         L41120J   84
+0586 O                         L4OV30J  110
+0587 O        T  1     L4
+0588 O                                   33 'PREPAY'
+0589 O                         L4CPREJ   48
+0590 O        T 22     L4 41
+0591 O                                   10 '**********'
+0592 O                                   40 'ACCOUNTS OUT OF BALANCE'
+0593 O                         OUTBAL    45
+0594 O        E 11     25
+0595 O                                    4 '****'
+0596 O                                   30 'INVALID ARDETL   TYPE - '
+0597 O                         ADTYPE    32
+0598 O                         ADINV#    41
+0599 O        E 11     26
+0600 O                                    4 '****'
+0601 O                         ADCOCU    12 '  -0     '
+0602 O                                   37 'ARCUST   MASTER MISSING'
