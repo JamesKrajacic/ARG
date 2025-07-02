@@ -1,0 +1,178 @@
+0002 H    P064                      B                                     AR137A
+     FAREFTD  IP  F 256 256 15AI     2 DISK
+0009 FARCUST  IF  F 384 384  8AI     2 DISK
+0010 FARCONT  IF  F 256 256  2AI     2 DISK
+     FAREFTS  O   F 100 100            DISK                      A
+     IAREFTD  NS  01   1NCD
+     I                                        1   1 AFDEL
+     I                                        2   60AFSEQ#
+     I                                        7   80AFCO  L3
+     I                                        9  140AFCUSTL2
+     I                                        7  140CUSKEY
+     I                                       15  210AFINV#L1
+     I                                    P  22  262AFAMT
+     I                                    P  27  302AFDISC
+     I                                       31  31 AFTYPE
+     I                                       32  370AFDATE
+     I                                       55  79 AFDESC
+     I                                       80  850AFDUDT
+     I                                      193 2000AFDAT8
+     I                                      201 2080AFDUD8
+     I                                      219 2260AFDSDT
+     I                                      228 2330AFUPDT
+     I                                      234 2390AFSLDT
+     I        NS  02
+0052 IARCUST  NS
+0053 I                                        1   1 ARDEL                 DELETE CODE
+0054 I                                        2   30ARCO                  COMPANY NO
+0055 I                                        4   90ARCUST                CUSTOMER NO
+0056 I                                       10  39 ARNAME                CUSTOMER NAME
+0057 I                                       40  69 ARADR1                ADDRESS LINE 1
+0058 I                                       70  99 ARADR2                ADDRESS LINE 2
+0059 I                                      100 129 ARADR3                ADDRESS LINE 3
+0060 I                                      130 159 ARADR4                ADDRESS LINE 4
+0061 I                                      160 1640ARZIP5                ZIP CODE
+0062 I                                      165 1680ARZIP9                ZIP + 4
+0063 I                                      169 1730ARZP14                ZIP + 4 + 5
+0064 I                                    P 174 1792ARTOTD                TOTAL DUE
+0065 I                                    P 180 1842ARCURD                CURRENT DUE
+0066 I* AS OF 04/23/97 THE RANGE ON THE AGING
+0067 I* BUCKETS ARE CONTAINED IN THE ARCONT FILE
+0068 I* REFER TO ARCONT TO FIND AGING BUCKETS
+0069 I* FOR A COMPANY.
+0070 I                                    P 185 1892AR0110                01-10 DAYS OVERD
+0071 I                                    P 190 1942AR1120                11-20 DAYS OVERD
+0072 I                                    P 195 1992AR2130                21-30 DAYS OVERD
+0073 I                                    P 200 2042AROV30                OVR30 DAYS OVERD
+0074 I                                    P 205 2092ARPYMT                LST CSH REC AMT
+0075 I                                      210 2150ARPDAT                LST CSH REC DATE
+0076 I                                    P 216 2202ARPREP                CASH UNAPPLIED
+0077 I                                    P 221 2252ARMTD$                SALES MTD
+0078 I                                    P 226 2302ARYTD$                SALES YTD
+0079 I                                      231 231 ARSTMT                STATEMENTS Y/N
+0080 I                                    P 232 2342ARFIN$                FINANCE CHG AMT
+0081 I                                    P 235 2402ARPBAL                PREVIOUS BALANCE
+0082 I                                      241 241 ARFINC                FINANCE CHG Y/N
+0083 I                                    P 242 2462ARM$PD                CASH REC'D MTD
+0084 I                                    P 247 2512ARY$PD                CASH REC'D YTD
+0085 I                                    P 252 2560ARCLMT                CREDIT LIMIT
+0086 I                                    P 257 2580ARAREA                AREA CODE
+0087 I                                    P 259 2620ARTELE                TELEPHONE #
+0088 I                                      263 2640ARSLS#                SALESMAN
+0089 I                                      265 2660ARTERM                TERMS CODE
+0090 I                                      267 270 ARSTAX                SALES TAX PAXX
+0091 I                                      271 280 ARLSTN                LAST NAME ABBR
+0092 I                                      281 282 ARGRUP                GROUP CODE
+0093 I                                      283 2850ARMILS                MILES-FREIGHT
+0094 I                                    P 286 2912ARHIBL                RECENT HI BAL.
+0095 I                                      292 2970ARHIDT                RECENT HI DT-YMD
+0096 I                                      298 2990ARINTR                INTER-COMPANY #
+0097 I                                      300 301 ARSTAT                STATE
+0098 I                                      302 302 AREFT                 EFT PARTICIPANT (N,Y)
+0099 I                                      303 3040ARGCO                 GROUPING COMPANY
+0100 I                                      305 3100ARGCUS                GROUPING CUSTOME
+0101 I                                      311 3180ARPDA8                LST CSH REC DATE
+0102 I                                      319 3260ARHID8                RECENT HI DT-YMD
+0103 I                                      327 3280ARETRM                EFT TERMS CODE
+0104 I                                      329 3310ARFAXA                FAX AREA CODE
+0105 I                                      332 3380ARFAXT                FAX TELEPHONE #
+0106 IARCONT  NS
+0107 I                                        1   1 ACDEL                 D - DELETE
+0108 I                                        2   30ACCO                  COMPANY #
+0109 I                                        4  33 ACNAME                COMPANY NAME
+0018 I                                       34  350ACARJ#                NEXT A/R JRNL #
+0019 I                                       36  370ACSLJ#                NEXT S/J JRNL #
+0020 I                                       38  450ACARGL                A/R G/L NUMBER
+0021 I                                       46  530ACSLGL                SALES G/L NUMBER
+0022 I                                       54  610ACDSGL                DISCOUNT G/L #
+0023 I                                       62  690ACCSGL                CASH G/L #
+0024 I                                       70  770ACTRGL                INTERCO G/L #
+0025 I                                       78  830ACDATE                LAST AGE DATE
+0026 I                                       84  91 ACSECR                SECUTIRY CODE-STMENTS
+0027 I                                       92  964ACFINC                FINANCE CHARGE %
+0028 I                                       97 1040ACFNGL                FINANCE G/L #
+0029 I                                      105 1060ACFFMO                FIRST FISCAL MONTH
+0030 I                                      107 1080ACLMT1                1-10/1-30/0-30
+0031 I                                      109 1100ACLMT2                11-20/31-60/31-60
+0032 I                                      111 1120ACLMT3                21-30/61-90/61-90
+0033 I                                      113 1140ACFILL                FILLER
+0034 I                                      115 1220ACEFCG                EFT CASH G/L #
+JB01 I                                      123 1250ACLMT4                OVER 30/90/91-120
+MG02 I                                      126 1310ACDTCL                LAST CLOSED DATE YYY
+     I           UDS
+     I                                      101 1020KYCO
+     I                                      103 1080KYSLDT
+     I                                      109 109 STATUS
+     I                                      110 1150KYUPDT
+     I                                      509 5100Y2KCEN
+     I                                      511 5120Y2KCMP
+     C*************************************************
+     C           ONCE      IFEQ *ZERO                      B1
+     C                     TIME           SYTMDT 120
+     C                     MOVELSYTMDT    SYSTME  60
+     C                     MOVE SYTMDT    SYSDTE  60
+     C                     Z-ADD1         ONCE    10
+     C           AFSLDT    MULT 10000.01  KYSYMD  60
+     C                     MOVEL20000000  KYSLD8  80
+     C                     MOVE KYSYMD    KYSLD8
+     C           KYUPDT    MULT 10000.01  KYUYMD  60
+     C                     MOVEL20000000  KYUPD8  80
+     C                     MOVE KYUYMD    KYUPD8
+     C                     Z-ADD*ZEROS    L2IAMT  92
+     C                     Z-ADD*ZEROS    L2DAMT  92
+     C                     Z-ADD*ZEROS    L2EAMT  92
+     C                     Z-ADD*ZEROS    L1IAMT  92
+     C                     Z-ADD*ZEROS    L1DAMT  92
+     C                     Z-ADD*ZEROS    L1EAMT  92
+     C                     Z-ADD*ZEROS    SEQ#    50
+     C                     Z-ADD*ZEROS    ZERO9   90
+0131 C           AFCO      CHAINARCONT               99
+     C***
+     C                     END                             E1
+     C*************************************************
+     C*
+     C   L2                DO
+0144 C                     Z-ADD*ZEROS    L2IAMT 102
+0145 C                     Z-ADD*ZEROS    L2DAMT 102
+0146 C                     Z-ADD*ZEROS    L2EAMT 102
+0147 C                     SETOF                     11
+0156 C           CUSKEY    CHAINARCUST               99
+     C** ADDED TO GET EMAIL ADDRESS OF EFT CUSTOMER TO PRINT
+     C** ON REPORT TO AUTOMATICALLY SPOOLFLEX
+     C*
+     C                     END
+0148 C*
+0149 C   L1                Z-ADD*ZEROS    ADWRK1 102
+0150 C   L1                Z-ADD*ZEROS    INVAMT 102
+0151 C   L1                Z-ADD*ZEROS    EFTAMT 102
+0152 C   L1                Z-ADD*ZEROS    L1IAMT 102
+0153 C   L1                Z-ADD*ZEROS    L1DAMT 102
+0154 C   L1                Z-ADD*ZEROS    L1EAMT 102
+0155 C*
+     C   01                DO
+     C           AFSLDT    MULT 10000.01  AFDYMD  60
+     C                     MOVEL20000000  AFDTD8  80
+     C                     MOVE AFDYMD    AFDTD8
+     C           AFAMT     SUB  AFDISC    EFTAMT  92
+     C                     ADD  AFAMT     L1IAMT
+     C                     ADD  AFDISC    L1DAMT
+     C                     ADD  EFTAMT    L1EAMT
+     C                     ADD  AFAMT     L2IAMT
+     C                     ADD  AFDISC    L2DAMT
+     C                     ADD  EFTAMT    L2EAMT
+     C*
+     C                     END
+     C*
+     C*
+0172 CL2                   EXCPTPRTL2
+     C****************************************************
+     OAREFTS  EADD             PRTL2
+     O                         AFDEL      1
+     O                         AFCO       3
+     O                         AFCUST     9
+     O                         AFDESC    34
+     O                         L2IAMT B  44P
+     O                         L2DAMT B  49P
+     O                         L2EAMT B  54P
+     O                         AFDTD8    62
+     O                         KYUPD8    70
